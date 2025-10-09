@@ -1,3 +1,4 @@
+"use client";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -6,7 +7,7 @@ const StockCard = ({ symbol }: { symbol: string }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await axios.get(`http://localhost:5000/${symbol}`);
+      const res = await axios.get(`http://localhost:5000/api/stocks/${symbol}`);
       setData(res.data);
     };
     fetchData();
@@ -29,3 +30,5 @@ const StockCard = ({ symbol }: { symbol: string }) => {
     </div>
   );
 };
+
+export default StockCard;
