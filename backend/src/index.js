@@ -5,6 +5,8 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import router from "./routes/stockRoutes.js";
 import { Server } from "socket.io";
+import http from "http";
+import axios from "axios";
 
 dotenv.config();
 connectDB();
@@ -14,9 +16,13 @@ app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+const server = http.createServer(app);
+
 const io=new Server(server,{
     cors:{origin:"*"},
 });
+
+const apikey=process.env.FINNHUB_KEY;
 
 app.get("/",(req,res)=>res.send("StockPulse Websocket Server Running"));
 
@@ -29,23 +35,38 @@ socket.on("subscribeToStock",(symbol)=>{
 const interval =setInterval(async()=>{
     try{
         const {data}= await axios.get(
-            `https://www.alphavantage.co/query`,
-            {params: {function:"GLOBAL_QUOTE",symbol,apikey:process.env.ALPHA_VANTAGE_KEY}}
-        )
+            `https://finnhub.io/api/v1/quote`,{
+                params:{symbol, token:apikey}
+            }
+            
+        );
+        console.log("Fetched data:",data);
+        
+if (!data || Object.keys(data).length === 0) {
+  console.log("No data received for", symbol);
+  return;
+}
+socket.emit("stockUpdate", data);
     }
     catch(err){
-        console.error("Error fetching stock", err.message);
+        if (err.response) {
+    console.log("Status:", err.response.status);
+    console.log("Headers:", err.response.headers);
+    console.log("Data:", err.response.data);
+  } else {
+    console.error("Error:", err.message);
+  }
     }
-},1000);
+},15000);
   socket.on("disconnect",()=> clearInterval(interval));
 })
 });
 
-app.get("/",(req,res)=>{res.send("backend active")});
+
 
 app.use("/api/stocks", router); 
 
 
-app.listen(5000,()=>console.log("server running on port 5000"));
+server.listen(5000,'0.0.0.0',()=>console.log("server running on port 5000"));
 
 

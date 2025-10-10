@@ -3,12 +3,10 @@ import axios from "axios";
 export const stockData= async(req,res)=>{
     const symbol=req.params.symbol;
     try{
-        const response=await axios.get(`https://www.alphavantage.co/query`,{
+        const response=await axios.get(`https://finnhub.io/api/v1/quote`,{
             params:{
-                function:"TIME_SERIES_INTRADAY",
                 symbol,
-                interval:"5min",
-                apikey:process.env.ALPHA_VANTAGE_KEY,
+                token:process.env.FINNHUB_KEY,
             }
         })
         res.json(response.data);
