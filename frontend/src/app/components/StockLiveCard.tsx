@@ -28,10 +28,10 @@ export default function StockLiveCard({ symbol }: StockLiveCardProp) {
   return (
     <div className="p-4 bg-gray-900 rounded-2xl shadow-md">
       <h2 className="text-lg font-semibold">{symbol}</h2>
-      <p>Price: ${parseFloat(data["05. price"]).toFixed(2)}</p>
-      <p>High: {data["03. high"]}</p>
-      <p>Low: {data["04. low"]}</p>
-      <p>Volume: {data["06. volume"]}</p>
+      <p>Price: ${data.c}</p>
+      <p>High: ${data.h}</p>
+      <p>Low: ${data.l}</p>
+      <p>Previous Close: ${data.pc}</p>
     </div>
   );
 }
