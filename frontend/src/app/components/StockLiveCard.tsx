@@ -11,7 +11,6 @@ type StockLiveCardProp = {
 };
 
 export default function StockLiveCard({ symbol }: StockLiveCardProp) {
-  const [data, setData] = useState<any>(null);
   const [price, setPrice] = useState<number | null>(null);
   const [prevPrice, setPrevPrice] = useState<number | null>(null);
   const [status, setStatus] = useState<"up" | "down" | "neutral">("neutral");
@@ -22,11 +21,13 @@ export default function StockLiveCard({ symbol }: StockLiveCardProp) {
     socket.on("stockUpdate", (data) => {
       if (data.symbol === symbol) {
         setPrevPrice(price);
+        const newPrev = price;
+        const newPrice = Number(data.price);
         setPrice(Number(data.price));
-        if (prevPrice !== null) {
-          if (data.price > prevPrice) {
+        if (newPrev !== null) {
+          if (newPrice > newPrev) {
             setStatus("up");
-          } else if (data.price < prevPrice) {
+          } else if (newPrice < newPrev) {
             setStatus("down");
           } else {
             setStatus("neutral");
@@ -35,10 +36,10 @@ export default function StockLiveCard({ symbol }: StockLiveCardProp) {
       }
     });
     return () => {
-      socket.off("stockData");
+      socket.off("stockUpdate");
       socket.emit("unsubscribeFromStock", symbol);
     };
-  }, [symbol, price, prevPrice]);
+  }, [symbol]);
 
   const color =
     status === "up"
@@ -47,7 +48,7 @@ export default function StockLiveCard({ symbol }: StockLiveCardProp) {
       ? "text-red-500"
       : "text-gray-700";
 
-  if (!data) {
+  if (price == null) {
     return <p>Loading {symbol}...</p>;
   }
 

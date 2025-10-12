@@ -46,7 +46,12 @@ if (!data || Object.keys(data).length === 0) {
   console.log("No data received for", symbol);
   return;
 }
-socket.emit("stockUpdate", data);
+socket.emit("stockUpdate", {
+  symbol,
+  price:data.c,
+  change:data.d,
+  percentageChange:data.dp
+});
     }
     catch(err){
         if (err.response) {
