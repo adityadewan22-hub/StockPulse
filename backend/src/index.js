@@ -1,4 +1,4 @@
-import express from "express";
+import express, { response } from "express";
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import cookieParser from "cookie-parser";
@@ -35,8 +35,11 @@ socket.on("subscribeToStock",(symbol)=>{
 
 const interval =setInterval(async()=>{
     try{
-      const cache=await getCache(symbol);
+      let data=null;
+      try{
+        const cache=await getCache(symbol);
       if(cache){
+        data=cache;
         console.log(`cache hit for ${symbol}`);
         socket.emit("stockUpdate",{
           symbol,
@@ -46,21 +49,31 @@ const interval =setInterval(async()=>{
         });
         return;
       }
-        const {data}= await axios.get(
+    }
+      catch(redisERR){
+        console.log("redis get failed")
+      }
+      if(!data){
+        const response= await axios.get(
             `https://finnhub.io/api/v1/quote`,{
                 params:{symbol, token:apikey}
             }
-            
         );
-        console.log("Fetched data:",data);
+        data=response.data;
+      }
+      console.log("Fetched data:",data);
 
         
 if (!data || Object.keys(data).length === 0) {
   console.log("No data received for", symbol);
   return;
 }
+try{
+  await setCache(symbol,data,15);
+}catch(redisERR){
+  console.log("redis failed, skipping cache");
+}
 
-await setCache(symbol,data,15);
 
 socket.emit("stockUpdate", {
   symbol,
