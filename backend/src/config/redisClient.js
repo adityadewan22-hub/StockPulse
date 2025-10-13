@@ -1,4 +1,4 @@
-import { connect } from "http2";
+
 import {createClient} from "redis";
 
 const client =createClient({
@@ -13,7 +13,7 @@ async function connectRedis() {
         console.log("connected to redis");
     }
     catch(err){
-        console.log("redis not available",err.message);
+        console.log("redis not available");
     }
 }
 
