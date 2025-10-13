@@ -7,6 +7,7 @@ import router from "./routes/stockRoutes.js";
 import { Server } from "socket.io";
 import http from "http";
 import axios from "axios";
+import { getCache,setCache } from "./config/cache.js";
 
 dotenv.config();
 connectDB();
@@ -34,6 +35,16 @@ socket.on("subscribeToStock",(symbol)=>{
 
 const interval =setInterval(async()=>{
     try{
+      const cache=await getCache(symbol);
+      if(cache){
+        console.log(`cache hit for ${symbol}`);
+        socket.emit("stockUpdate",{
+          symbol,
+          price:cache.c,
+          change:cache.d,
+          percentageChange:cache.dp,
+        })
+      }
         const {data}= await axios.get(
             `https://finnhub.io/api/v1/quote`,{
                 params:{symbol, token:apikey}
@@ -41,6 +52,7 @@ const interval =setInterval(async()=>{
             
         );
         console.log("Fetched data:",data);
+
         
 if (!data || Object.keys(data).length === 0) {
   console.log("No data received for", symbol);
