@@ -43,7 +43,8 @@ const interval =setInterval(async()=>{
           price:cache.c,
           change:cache.d,
           percentageChange:cache.dp,
-        })
+        });
+        return;
       }
         const {data}= await axios.get(
             `https://finnhub.io/api/v1/quote`,{
@@ -58,6 +59,9 @@ if (!data || Object.keys(data).length === 0) {
   console.log("No data received for", symbol);
   return;
 }
+
+await setCache(symbol,data,15);
+
 socket.emit("stockUpdate", {
   symbol,
   price:data.c,
