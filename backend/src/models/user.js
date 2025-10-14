@@ -1,4 +1,4 @@
-// want to take username(string) password(string)
+
 import mongoose from "mongoose" 
 
 const userSchema=new mongoose.Schema({
