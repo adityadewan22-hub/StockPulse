@@ -8,6 +8,7 @@ import { Server } from "socket.io";
 import http from "http";
 import axios from "axios";
 import { getCache,setCache } from "./config/cache.js";
+import authRouter from "./routes/authRoutes.js";
 
 dotenv.config();
 connectDB();
@@ -16,6 +17,7 @@ const app = express();
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use("/api/auth",authRouter)
 
 const server = http.createServer(app);
 
