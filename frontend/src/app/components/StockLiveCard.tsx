@@ -4,7 +4,10 @@ import { io } from "socket.io-client";
 import { useRef } from "react";
 import { motion } from "framer-motion";
 
-const socket = io("http://localhost:5000");
+const token = localStorage.getItem("token");
+const socket = io("http://localhost:5000", {
+  auth: { token },
+});
 
 type StockLiveCardProp = {
   symbol: string;

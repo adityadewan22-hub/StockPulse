@@ -5,9 +5,17 @@ import axios from "axios";
 const StockCard = ({ symbol }: { symbol: string }) => {
   const [data, setData] = useState<any>(null);
 
+  const token = localStorage.getItem("token");
   useEffect(() => {
     const fetchData = async () => {
-      const res = await axios.get(`http://localhost:5000/api/stocks/${symbol}`);
+      const res = await axios.get(
+        `http://localhost:5000/api/stocks/${symbol}`,
+        {
+          headers: {
+            Authorization: `Bearer {$token}`,
+          },
+        }
+      );
       setData(res.data);
     };
     fetchData();
