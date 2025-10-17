@@ -1,6 +1,7 @@
+"use client";
 import { useEffect, type ReactNode } from "react";
 import { useAuth } from "../context/authContext";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 function ProtectRoute({ children }: { children: ReactNode }) {
   const { token } = useAuth();

@@ -1,3 +1,4 @@
+"use client";
 import { useState } from "react";
 import axios from "axios";
 
@@ -26,7 +27,10 @@ const register = () => {
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
-      <form onSubmit={handleRegister}>
+      <form
+        onSubmit={handleRegister}
+        className="flex flex-col gap-4 p-6 bg-white rounded shadow-md text-black"
+      >
         <h2>Register</h2>
         <input
           type="email"
@@ -50,3 +54,5 @@ const register = () => {
     </div>
   );
 };
+
+export default register;
