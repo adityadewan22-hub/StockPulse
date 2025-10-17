@@ -13,6 +13,8 @@ export const registerUser=async(req,res)=>{
         const hashedPassword= await bcrypt.hash(password,salt);
         const newUser=new User({username,email,password:hashedPassword});
         await newUser.save();
+        const token=jwt.sign({_id:existingUser._id,email:existingUser.email},process.env,JWT_KEY,{expiresIn:"7d"});
+        res.status(200).json({ token, user: { username: user.username, email: user.email } });
     }catch(err){
         console.log("couldn't register",err.message);
     }
