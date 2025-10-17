@@ -9,11 +9,16 @@ const register = () => {
   const handleRegister = async (e: React.FormEvent) => {
     try {
       e.preventDefault();
-      const res = axios.post("http://localhost:5000/api/stocks/register", {
-        email,
-        password,
-        username,
-      });
+      const res = await axios.post(
+        "http://localhost:5000/api/stocks/register",
+        {
+          email,
+          password,
+          username,
+        }
+      );
+      const { token } = res.data;
+      localStorage.setItem("token", token);
     } catch (err: any) {
       console.log("registeration failed", err.message);
     }

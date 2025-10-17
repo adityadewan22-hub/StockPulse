@@ -13,6 +13,8 @@ const login = () => {
         email,
         password,
       });
+      const { token } = res.data;
+      localStorage.setItem("token", token);
     } catch (err: any) {
       console.log("couldnt login", err.message);
     }
