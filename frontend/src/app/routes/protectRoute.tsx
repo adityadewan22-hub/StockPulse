@@ -1,14 +1,21 @@
-import type { ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 import { useAuth } from "../context/authContext";
-import { Navigate } from "react-router-dom";
+import { useRouter } from "next/router";
 
 function ProtectRoute({ children }: { children: ReactNode }) {
   const { token } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!token) {
+      router.push("/login");
+    }
+  }, [token, router]);
   if (!token) {
-    return <Navigate to="/login" replace />;
+    return null;
   }
 
-  return children;
+  return <>{children}</>;
 }
 
 export default ProtectRoute;
