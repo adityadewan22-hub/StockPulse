@@ -9,6 +9,7 @@ import http from "http";
 import axios from "axios";
 import { getCache,setCache } from "./config/cache.js";
 import authRouter from "./routes/authRoutes.js";
+import stockAuth from "./middleware/socketAuth.js";
 
 dotenv.config();
 connectDB();
@@ -24,6 +25,8 @@ const server = http.createServer(app);
 const io=new Server(server,{
     cors:{origin:"*"},
 });
+
+io.use(stockAuth);
 
 const apikey=process.env.FINNHUB_KEY;
 
