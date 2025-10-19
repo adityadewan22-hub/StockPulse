@@ -20,7 +20,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use("/api/auth",authRouter) 
 
-console.log("JWT_KEY:", process.env.JWT_KEY);
 
 const server = http.createServer(app);
 
