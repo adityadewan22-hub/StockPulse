@@ -10,14 +10,11 @@ const register = () => {
   const handleRegister = async (e: React.FormEvent) => {
     try {
       e.preventDefault();
-      const res = await axios.post(
-        "http://localhost:5000/api/stocks/register",
-        {
-          email,
-          password,
-          username,
-        }
-      );
+      const res = await axios.post("http://localhost:5000/api/auth/register", {
+        email,
+        password,
+        username,
+      });
       const { token } = res.data;
       localStorage.setItem("token", token);
     } catch (err: any) {
@@ -37,19 +34,28 @@ const register = () => {
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          className="border border-gray-400 p-2 rounded bg-gray-100"
         ></input>
         <input
           type="password"
           placeholder="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          className="border border-gray-400 p-2 rounded bg-gray-100"
         ></input>
         <input
           type="username"
           placeholder="username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
+          className="border border-gray-400 p-2 rounded bg-gray-100"
         ></input>
+        <button
+          type="submit"
+          className="bg-blue-500 text-white p-2 rounded mt-2"
+        >
+          Register
+        </button>
       </form>
     </div>
   );

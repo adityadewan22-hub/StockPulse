@@ -1,9 +1,12 @@
 "use client";
 import axios from "axios";
 import React, { FormEvent, useState } from "react";
+import { useRouter } from "next/navigation";
+import "../background.css";
 
 const Login = () => {
   //we need state, handle and reutrn;
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -16,13 +19,14 @@ const Login = () => {
       });
       const { token } = res.data;
       localStorage.setItem("token", token);
+      router.push("/");
     } catch (err: any) {
       console.log("couldnt login", err.message);
     }
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
+    <div className="flex justify-center items-center h-screen background-div">
       <form
         onSubmit={handleLogin}
         className="flex flex-col gap-4 p-6 bg-white rounded shadow-md text-black"

@@ -56,21 +56,26 @@ export default function StockLiveCard({ symbol }: StockLiveCardProp) {
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      className="p-4 border rounded-xl shadow-md bg-white w-64 text-center"
+    <div
+      className=" flex justify-center items-center bg-cover bg-center"
+      style={{ backgroundImage: "url('/background.jpg')" }}
     >
-      <h2 className="text-lg font-semibold">{symbol}</h2>
-      <motion.p
-        key={price}
-        animate={{ scale: [1, 1.2, 1] }}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
-        className={`text-2xl font-bold mt-2 ${color}`}
+        className="p-4 border rounded-xl shadow-md bg-white w-64 text-center "
       >
-        {price ?? "--"}
-      </motion.p>
-    </motion.div>
+        <h2 className="text-lg font-semibold">{symbol}</h2>
+        <motion.p
+          key={price}
+          animate={{ scale: [1, 1.2, 1] }}
+          transition={{ duration: 0.3 }}
+          className={`text-2xl font-bold mt-2 ${color}`}
+        >
+          {price ?? "--"}
+        </motion.p>
+      </motion.div>
+    </div>
   );
 }
