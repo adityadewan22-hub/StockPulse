@@ -52,6 +52,15 @@ const Login = () => {
         >
           Login
         </button>
+        <p>
+          Don't have an account?
+          <span
+            onClick={() => router.push("/register")}
+            className="text-blue-500 cursor-pointer hover:underline"
+          >
+            Register
+          </span>
+        </p>
       </form>
     </div>
   );
