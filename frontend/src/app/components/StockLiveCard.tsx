@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import { useRef } from "react";
 import { motion } from "framer-motion";
+import StockCard from "./StockCard";
 
 const token = localStorage.getItem("token");
 const socket = io("http://localhost:5000", {
@@ -52,7 +53,7 @@ export default function StockLiveCard({ symbol }: StockLiveCardProp) {
       : "text-gray-700";
 
   if (price == null) {
-    return <p>Loading {symbol}...</p>;
+    return <StockCard symbol={symbol} />;
   }
 
   return (

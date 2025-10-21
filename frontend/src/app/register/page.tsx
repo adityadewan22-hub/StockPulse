@@ -9,11 +9,12 @@ const register = () => {
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
   const router = useRouter();
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
   const handleRegister = async (e: React.FormEvent) => {
     try {
       e.preventDefault();
-      const res = await axios.post("http://localhost:5000/api/auth/register", {
+      const res = await axios.post(`${API_URL}/api/auth/register`, {
         email,
         password,
         username,
