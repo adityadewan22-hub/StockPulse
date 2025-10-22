@@ -1,5 +1,5 @@
 import verifyToken from "../middleware/authMiddleware";
-import express from express;
+import express from "express";
 import { buyStock, getPortfolio, sellStock } from "../controllers/portfolioController";
 
 const portfolioRouter=express.router();
