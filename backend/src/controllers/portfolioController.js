@@ -1,4 +1,5 @@
-import Portfolio from "../models/portfolio";
+import Portfolio from "../models/portfolio.js";
+import { prices,subscriptions } from "../priceStore.js";
 
 export const buyStock=async(req,res)=>{
     try{

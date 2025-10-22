@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const PortfolioSchema=new mongoose.Schema({
     stock:{
-        type:string,
+        type:String,
         required:true,
     },
     quantity: {
@@ -14,7 +14,7 @@ const PortfolioSchema=new mongoose.Schema({
         type: Number,
         required: true,
     },
-    totalCost:{
+    totalInvested:{
         type:Number,
         default:0,
     },
