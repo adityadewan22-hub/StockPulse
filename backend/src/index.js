@@ -10,6 +10,7 @@ import axios from "axios";
 import { getCache,setCache } from "./config/cache.js";
 import authRouter from "./routes/authRoutes.js";
 import stockAuth from "./middleware/socketAuth.js";
+import { subscriptions } from "./priceStore.js";
 
 dotenv.config();
 connectDB();
@@ -36,7 +37,11 @@ app.get("/",(req,res)=>res.send("StockPulse Websocket Server Running"));
 io.on("connection",(socket)=>{
     console.log("client connected:",socket.id);
 
+    socket.subscribedSymbols=new Set();
+
 socket.on("subscribeToStock",(symbol)=>{
+  subscriptions[symbol]=(subscriptions[symbol]||0)+1;
+  socket.subscribedSymbols.add(symbol);
     console.log("Subscribe to:",symbol);
 
 const interval =setInterval(async()=>{
@@ -98,7 +103,27 @@ socket.emit("stockUpdate", {
   }
     }
 },15000);
-  socket.on("disconnect",()=> clearInterval(interval));
+if(!socket.intervals){
+  socket.intervals=[];
+}
+socket.intervals.push(interval);
+
+});
+
+socket.on("disconnect",()=>{
+  if(socket.intervals){
+    for(const i of socket.intervals){
+      clearInterval(i);
+    }
+  }
+  for(const symbol of socket.subscribedSymbols){
+    subscriptions[symbol]=subscriptions[symbol]-1;
+    if(subscriptions[symbol]<=0){
+      delete subscriptions[symbol];
+      console.log(`unsubscribed from ${symbol}`)
+    }
+  }
+  console.log("client disconnected:-",socket.id);
 })
 });
 
