@@ -11,6 +11,7 @@ import { getCache,setCache } from "./config/cache.js";
 import authRouter from "./routes/authRoutes.js";
 import stockAuth from "./middleware/socketAuth.js";
 import { subscriptions } from "./priceStore.js";
+import portfolioRouter from "./routes/portfolioRoutes.js";
 
 dotenv.config();
 connectDB();
@@ -20,6 +21,7 @@ app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use("/api/auth",authRouter) 
+app.use("/api/stocks",portfolioRouter)
 
 
 const server = http.createServer(app);
