@@ -21,6 +21,8 @@ const Login = () => {
       });
       const { token } = res.data;
       localStorage.setItem("token", token);
+      const path=localStorage.getItem("redirectLogin")||"/";
+      localStorage.removeItem("redirectLogin");
       router.push("/");
     } catch (err: any) {
       console.log("couldnt login", err.message);

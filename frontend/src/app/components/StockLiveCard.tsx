@@ -6,7 +6,8 @@ import { motion } from "framer-motion";
 import StockCard from "./StockCard";
 
 const token = localStorage.getItem("token");
-const socket = io("http://localhost:5000", {
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const socket = io(`${API_URL}`, {
   auth: { token },
 });
 

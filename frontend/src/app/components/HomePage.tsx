@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { LeafyGreen } from "lucide-react";
+import AnimatedGraph from "../animations/graph";
 
 const HomePage = () => {
   const [login, setLogin] = useState(false);
@@ -59,6 +59,7 @@ const HomePage = () => {
       >
         Dashboard
       </button>
+      <AnimatedGraph />
     </div>
     //graph image or something of sorts
   );
