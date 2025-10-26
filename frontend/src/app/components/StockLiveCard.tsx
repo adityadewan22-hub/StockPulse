@@ -4,6 +4,9 @@ import { io } from "socket.io-client";
 import { useRef } from "react";
 import { motion } from "framer-motion";
 import StockCard from "./StockCard";
+import axios from "axios";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "../context/authContext";
 
 const token = localStorage.getItem("token");
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -20,6 +23,8 @@ export default function StockLiveCard({ symbol }: StockLiveCardProp) {
   const [prevPrice, setPrevPrice] = useState<number | null>(null);
   const [status, setStatus] = useState<"up" | "down" | "neutral">("neutral");
   const intervalRef = useRef<any>(null);
+  const [quantity, setQuantity] = useState(0);
+  const { token } = useAuth();
 
   useEffect(() => {
     socket.emit("subscribeToStock", symbol);
@@ -40,11 +45,37 @@ export default function StockLiveCard({ symbol }: StockLiveCardProp) {
         }
       }
     });
+
     return () => {
       socket.off("stockUpdate");
       socket.emit("unsubscribeFromStock", symbol);
     };
   }, [symbol]);
+
+  const handleBuy = async (
+    symbol: string,
+    quantity: Number,
+    buyPrice: Number
+  ) => {
+    try {
+      const buy = await axios.post(
+        `${API_URL}/api/stocks/buy`,
+        {
+          stock: symbol,
+          quantity,
+          buyPrice: price,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      alert(buy.data.message || "stock bought");
+    } catch (err: any) {
+      console.log("error buying stock", err.message);
+    }
+  };
 
   const color =
     status === "up"
@@ -77,6 +108,12 @@ export default function StockLiveCard({ symbol }: StockLiveCardProp) {
         >
           {price ?? "--"}
         </motion.p>
+        <input
+          type="number"
+          value={quantity}
+          onChange={(e) => setQuantity(Number(e.target.value))}
+        />
+        <Button onClick={() => handleBuy(symbol, quantity, price)}>Buy</Button>
       </motion.div>
     </div>
   );
