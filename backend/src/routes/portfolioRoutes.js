@@ -5,7 +5,13 @@ import { buyStock, getPortfolio, sellStock } from "../controllers/portfolioContr
 const portfolioRouter=express.Router();
 
 portfolioRouter.post("/buy",verifyToken,buyStock);
+
 portfolioRouter.post("/sell",verifyToken,sellStock);
 portfolioRouter.get("/",verifyToken,getPortfolio);
+
+portfolioRouter.post("/buy", (req, res, next) => {
+  console.log("✅ hit /buy route inside portfolioRouter");
+  next();
+}, verifyToken, buyStock);
 
 export default portfolioRouter;

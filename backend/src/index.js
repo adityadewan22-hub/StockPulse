@@ -21,7 +21,7 @@ app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use("/api/auth",authRouter) 
-app.use("/api/stocks",portfolioRouter)
+app.use("/api/portfolio",portfolioRouter)
 
 
 const server = http.createServer(app);
@@ -33,6 +33,11 @@ const io=new Server(server,{
 io.use(stockAuth);
 
 const apikey=process.env.FINNHUB_KEY;
+
+app.use((req, res, next) => {
+  console.log("Incoming request:", req.method, req.url);
+  next();
+});
 
 app.get("/",(req,res)=>res.send("StockPulse Websocket Server Running"));
 

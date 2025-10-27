@@ -1,6 +1,10 @@
 import jwt from "jsonwebtoken"
 
+
+
 const verifyToken= async(req,res,next)=>{
+    
+console.log("verifyToken middleware triggered");
     const authHeader=req.headers.authorization;
     if(!authHeader){
         return res.status(401).json({message:"no token provided"});

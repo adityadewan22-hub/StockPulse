@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const PortfolioSchema=new mongoose.Schema({
-    stock:{
+    symbol:{
         type:String,
         required:true,
     },
@@ -10,7 +10,7 @@ const PortfolioSchema=new mongoose.Schema({
         required: true,
         min: 1,
     },
-    BuyPrice: {
+    buyPrice: {
         type: Number,
         required: true,
     },
