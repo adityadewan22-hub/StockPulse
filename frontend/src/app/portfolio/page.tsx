@@ -10,12 +10,13 @@ import { footer } from "framer-motion/client";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { getSocket } from "../components/Socket";
 
 type PortfolioItem = {
   symbol: string;
-  quantity: Number;
-  buyPrice: Number;
-  livePrice: Number;
+  quantity: number;
+  buyPrice: number;
+  livePrice: number;
 };
 
 export default function Portfolio() {
@@ -25,17 +26,15 @@ export default function Portfolio() {
   const [invested, setInvested] = useState(0);
   const { token } = useAuth();
   const router = useRouter();
+  const socket = getSocket();
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
-  const socket = io(`${API_URL}`, {
-    auth: { token },
-  });
 
   useEffect(() => {
     if (!token) {
       return;
     }
     axios
-      .get(`${API_URL}/stocks/portfolio`, {
+      .get(`${API_URL}/portfolio/portfolio`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -90,7 +89,7 @@ export default function Portfolio() {
   ) => {
     try {
       const sell = await axios.post(
-        `${API_URL}/stock/sell`,
+        `${API_URL}/portfolio/sell`,
         {
           symbol,
           quantity,
@@ -165,7 +164,7 @@ export default function Portfolio() {
               <DashboardCard
                 title="Portfolio Holdings"
                 value={
-                  <HoldingsTable holdings={sampleHoldings} totalValue={value} />
+                  <HoldingsTable holdings={portfolio} totalValue={value} />
                 }
                 subtitle="Detailed view of your current stock positions, dividends, and reinvestments"
               />

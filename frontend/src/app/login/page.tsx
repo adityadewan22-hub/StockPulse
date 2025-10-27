@@ -2,7 +2,6 @@
 import axios from "axios";
 import React, { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
-import "../background.css";
 
 const Login = () => {
   //we need state, handle and reutrn;
@@ -21,7 +20,7 @@ const Login = () => {
       });
       const { token } = res.data;
       localStorage.setItem("token", token);
-      const path=localStorage.getItem("redirectLogin")||"/";
+      const path = localStorage.getItem("redirectLogin") || "/";
       localStorage.removeItem("redirectLogin");
       router.push("/");
     } catch (err: any) {
@@ -30,7 +29,7 @@ const Login = () => {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen background-div">
+    <div className="flex justify-center items-center h-screen ">
       <form
         onSubmit={handleLogin}
         className="flex flex-col gap-4 p-6 bg-white rounded shadow-md text-black"

@@ -7,16 +7,13 @@ import StockCard from "./StockCard";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "../context/authContext";
-
-const token = localStorage.getItem("token");
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
-const socket = io(`${API_URL}`, {
-  auth: { token },
-});
+import { getSocket } from "./Socket";
 
 type StockLiveCardProp = {
   symbol: string;
 };
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export default function StockLiveCard({ symbol }: StockLiveCardProp) {
   const [price, setPrice] = useState<number | null>(null);
@@ -25,6 +22,7 @@ export default function StockLiveCard({ symbol }: StockLiveCardProp) {
   const intervalRef = useRef<any>(null);
   const [quantity, setQuantity] = useState(0);
   const { token } = useAuth();
+  const socket = getSocket();
 
   useEffect(() => {
     socket.emit("subscribeToStock", symbol);
@@ -54,14 +52,14 @@ export default function StockLiveCard({ symbol }: StockLiveCardProp) {
 
   const handleBuy = async (
     symbol: string,
-    quantity: Number,
-    buyPrice: Number
+    quantity: number,
+    buyPrice: number
   ) => {
     try {
       const buy = await axios.post(
-        `${API_URL}/api/stocks/buy`,
+        `${API_URL}/api/portfolio/buy`,
         {
-          stock: symbol,
+          symbol,
           quantity,
           buyPrice: price,
         },
@@ -89,10 +87,7 @@ export default function StockLiveCard({ symbol }: StockLiveCardProp) {
   }
 
   return (
-    <div
-      className=" flex justify-center items-center bg-cover bg-center"
-      style={{ backgroundImage: "url('/background.jpg')" }}
-    >
+    <div className=" flex justify-center items-center bg-cover bg-center">
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}

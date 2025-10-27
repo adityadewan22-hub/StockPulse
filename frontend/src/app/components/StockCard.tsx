@@ -29,10 +29,7 @@ const StockCard = ({ symbol }: { symbol: string }) => {
       : "text-gray-700";
 
   return (
-    <div
-      className=" flex justify-center items-center bg-cover bg-center"
-      style={{ backgroundImage: "url('/background.jpg')" }}
-    >
+    <div className=" flex justify-center items-center bg-cover bg-center">
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
