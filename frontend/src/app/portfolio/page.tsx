@@ -6,7 +6,7 @@ import { io } from "socket.io-client";
 import { DashboardCard } from "@/components/ui/cards";
 import { HoldingsTable } from "@/components/ui/holdingtable";
 import { TabsList, Tabs, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { footer } from "framer-motion/client";
+import { footer, symbol } from "framer-motion/client";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -165,7 +165,25 @@ export default function Portfolio() {
               <DashboardCard
                 title="Portfolio Holdings"
                 value={
-                  <HoldingsTable holdings={portfolio} totalValue={value} />
+                  <HoldingsTable
+                    holdings={portfolio.map((stock) => ({
+                      ...stock,
+                      btn: (
+                        <Button
+                          onClick={() =>
+                            handleSell(
+                              stock.symbol,
+                              stock.quantity,
+                              stock.livePrice
+                            )
+                          }
+                        >
+                          Sell
+                        </Button>
+                      ),
+                    }))}
+                    totalValue={value}
+                  />
                 }
                 subtitle="Detailed view of your current stock positions, dividends, and reinvestments"
               />

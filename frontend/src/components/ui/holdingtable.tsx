@@ -8,12 +8,18 @@ import {
   TableRow,
   TableFooter,
 } from "@/components/ui/table";
+import { ReactElement } from "react";
+import axios from "axios";
+import { useAuth } from "@/app/context/authContext";
+import { Button } from "./button";
+import { symbol } from "framer-motion/client";
 
 type Holding = {
   symbol: string;
   quantity: number;
   buyPrice: number;
   livePrice: number;
+  btn: ReactElement;
 };
 
 type Props = {
@@ -32,6 +38,7 @@ export function HoldingsTable({ holdings, totalValue }: Props) {
             <TableHead>Buy Price</TableHead>
             <TableHead>Live Price</TableHead>
             <TableHead>Profit / Loss</TableHead>
+            <TableHead>Sell</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -50,6 +57,7 @@ export function HoldingsTable({ holdings, totalValue }: Props) {
                 >
                   ${profit.toFixed(2)}
                 </TableCell>
+                <TableCell>{stock.btn}</TableCell>
               </TableRow>
             );
           })}
