@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { getSocket } from "../components/Socket";
+import ProtectRoute from "../routes/protectRoute";
 
 type PortfolioItem = {
   symbol: string;
@@ -34,7 +35,7 @@ export default function Portfolio() {
       return;
     }
     axios
-      .get(`${API_URL}/portfolio/portfolio`, {
+      .get(`${API_URL}/api/portfolio/port`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -45,7 +46,7 @@ export default function Portfolio() {
       .catch((err) => {
         console.log(err.message);
       });
-  }, []);
+  }, [token]);
 
   useEffect(() => {
     portfolio.forEach((stock) => {
@@ -89,7 +90,7 @@ export default function Portfolio() {
   ) => {
     try {
       const sell = await axios.post(
-        `${API_URL}/portfolio/sell`,
+        `${API_URL}/api/portfolio/sell`,
         {
           symbol,
           quantity,
