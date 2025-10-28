@@ -2,16 +2,13 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/authContext";
 import axios from "axios";
-import { io } from "socket.io-client";
 import { DashboardCard } from "@/components/ui/cards";
 import { HoldingsTable } from "@/components/ui/holdingtable";
 import { TabsList, Tabs, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { footer, symbol } from "framer-motion/client";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { getSocket } from "../components/Socket";
-import ProtectRoute from "../routes/protectRoute";
+import { Chart1 } from "@/components/ui/piechart";
 
 type PortfolioItem = {
   symbol: string;
@@ -107,30 +104,37 @@ export default function Portfolio() {
       console.log(err.message);
     }
   };
+  let Percentage = (profit / invested) * 100;
 
   const cards = [
     {
       title: "Total Portfolio Value",
-      value: "$25,000",
+      value: `${totalValue}`,
       footer: "Your total value",
     },
-    { title: "Total Invested", value: "$20,000", footer: "Your money spent" },
-    { title: "Total Profit", value: "$5,000", footer: "Your gain" },
-    { title: "Percentage Gain/Loss", value: "25%", footer: "math" },
+    {
+      title: "Total Invested",
+      value: `${invested}`,
+      footer: "Your money spent",
+    },
+    { title: "Total Profit", value: `${profit}`, footer: "Your gain" },
+    { title: "Percentage Gain/Loss", value: `${Percentage}`, footer: "math" },
   ];
 
   const sampleHoldings = [
-    { symbol: "AAPL", quantity: 10, buyPrice: 150, livePrice: 120 },
-    { symbol: "TSLA", quantity: 5, buyPrice: 700, livePrice: 710 },
-    { symbol: "GOOG", quantity: 2, buyPrice: 2800, livePrice: 2825 },
+    { symbol: "AAPL", investmentPerStock: 15000 },
+    { symbol: "TSLA", investmentPerStock: 10000 },
+    { symbol: "GOOG", investmentPerStock: 5000 },
   ];
   const value = 700;
   return (
-    <div className=" min-h-screen bg-gray-950 text-white p-5 px-50 py-10 border-t border-gray-300 my-10">
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-800/20 via-purple-700/20 pointer-events-none "></div>
+    <div className=" min-h-screen bg-gray-950 text-white p-5 px-50 py-10 border-gray-300 ">
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-800/20 via-purple-700/10 pointer-events-none "></div>
       <div className="max-w-7xl mx-auto ">
         <div className="flex justify-between items-center max-w-7xl mx-auto">
-          <h1 className="text-3xl font-semibold">Stock Portfolio Dashboard</h1>
+          <h1 className="text-3xl font-semibold py-10">
+            Stock Portfolio Dashboard
+          </h1>
           <Button asChild>
             <button onClick={() => router.push("/")} className="cursor-pointer">
               Home
@@ -189,7 +193,12 @@ export default function Portfolio() {
               />
             </TabsContent>
 
-            <TabsContent value="charts"></TabsContent>
+            <TabsContent value="charts">
+              <DashboardCard
+                title="Portfolio Holdings"
+                value=<Chart1 shares={sampleHoldings} />
+              ></DashboardCard>
+            </TabsContent>
           </Tabs>
         </div>
       </div>

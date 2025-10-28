@@ -5,10 +5,11 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
+import React, { ReactElement } from "react";
 
 type DashboardCardProps = {
   title: string;
-  value: string | React.ReactNode;
+  value: string | React.ReactNode | ReactElement;
   subtitle?: string;
   footer?: React.ReactNode;
 };
@@ -27,7 +28,7 @@ export function DashboardCard({
         </CardTitle>
         {subtitle && <p className="text-xs text-gray-400">{subtitle}</p>}
       </CardHeader>
-      <CardContent>
+      <CardContent className=" flex items-end">
         {typeof value === "string" || typeof value === "number" ? (
           <p className="text-2xl font-bold leading-tight">{value}</p>
         ) : (
