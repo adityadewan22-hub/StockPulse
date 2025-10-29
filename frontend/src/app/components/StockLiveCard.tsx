@@ -106,6 +106,7 @@ export default function StockLiveCard({ symbol }: StockLiveCardProp) {
         <input
           type="number"
           value={quantity}
+          min={0}
           onChange={(e) => setQuantity(Number(e.target.value))}
         />
         <Button onClick={() => handleBuy(symbol, quantity, price)}>Buy</Button>

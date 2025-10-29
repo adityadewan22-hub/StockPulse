@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { getSocket } from "../components/Socket";
 import { Chart1 } from "@/components/ui/piechart";
+import { s } from "framer-motion/client";
 
 type PortfolioItem = {
   symbol: string;
@@ -23,6 +24,7 @@ export default function Portfolio() {
   const [totalValue, setTotalValue] = useState(0);
   const [invested, setInvested] = useState(0);
   const { token } = useAuth();
+  const [sold, setSold] = useState(0);
   const router = useRouter();
   const socket = getSocket();
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -86,7 +88,7 @@ export default function Portfolio() {
 
   const handleSell = async (
     symbol: string,
-    quantity: number,
+    sold: number,
     sellPrice: number
   ) => {
     try {
@@ -94,7 +96,7 @@ export default function Portfolio() {
         `${API_URL}/api/portfolio/sell`,
         {
           symbol,
-          quantity,
+          sold,
           sellPrice,
         },
         {
@@ -177,17 +179,22 @@ export default function Portfolio() {
                     holdings={portfolio.map((stock) => ({
                       ...stock,
                       btn: (
-                        <Button
-                          onClick={() =>
-                            handleSell(
-                              stock.symbol,
-                              stock.quantity,
-                              stock.livePrice
-                            )
-                          }
-                        >
-                          Sell
-                        </Button>
+                        <>
+                          <input
+                            type="number"
+                            value={sold}
+                            onChange={(e) => setSold(Number(e.target.value))}
+                            min={0}
+                            max={stock.quantity}
+                          />
+                          <Button
+                            onClick={() =>
+                              handleSell(stock.symbol, sold, stock.livePrice)
+                            }
+                          >
+                            Sell
+                          </Button>
+                        </>
                       ),
                     }))}
                     totalValue={value}
