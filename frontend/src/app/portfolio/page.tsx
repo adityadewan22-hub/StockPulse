@@ -46,14 +46,18 @@ export default function Portfolio() {
   }, [token]);
 
   useEffect(() => {
+    if (portfolio.length === 0) {
+      return;
+    }
     portfolio.forEach((stock) => {
       socket.emit("subscribeToStock", stock.symbol);
     });
 
     socket.on("stockUpdate", (data) => {
+      console.log("Received live update:", data);
       setPortfolio((prev) =>
         prev.map((s) =>
-          s.symbol === data.symbol ? { ...s, livePrice: data.c } : s
+          s.symbol === data.symbol ? { ...s, livePrice: data.price } : s
         )
       );
     });
