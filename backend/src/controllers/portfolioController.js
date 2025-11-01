@@ -51,9 +51,10 @@ export const sellStock=async(req,res)=>{
         if(quantity>stock.quantity){
             return res.status(404).json({message:"not enough shares to sell"})
         }
-        const profit=(stock.sellPrice-stock.buyPrice)*quantity;
+        const profit=(sellPrice-stock.buyPrice)*quantity;
         stock.quantity=stock.quantity-quantity;
         stock.totalInvested=stock.buyPrice*quantity;
+        stock.profit = (stock.profit || 0) + profit;
         if(stock.quantity===0){
             await stock.deleteOne();
         }
@@ -73,7 +74,7 @@ export const sellStock=async(req,res)=>{
 export const getPortfolio=async(req,res)=>{
     try{
         const userId=req.user.id;
-        const portfolio=await Portfolio.findOne({userId});
+        const portfolio=await Portfolio.find({userId});
         res.status(200).json(portfolio);
     }catch(err){
         console.log(err.message);

@@ -57,7 +57,7 @@ const interval =setInterval(async()=>{
       try{
         const cache=await getCache(symbol);
       if(cache){
-        data=cache;
+        
         console.log(`cache hit for ${symbol}`);
         socket.emit("stockUpdate",{
           symbol,

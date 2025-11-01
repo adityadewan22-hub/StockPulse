@@ -7,11 +7,6 @@ const portfolioRouter=express.Router();
 portfolioRouter.post("/buy",verifyToken,buyStock);
 
 portfolioRouter.post("/sell",verifyToken,sellStock);
-portfolioRouter.get("/",verifyToken,getPortfolio);
-
-portfolioRouter.post("/buy", (req, res, next) => {
-  console.log("✅ hit /buy route inside portfolioRouter");
-  next();
-}, verifyToken, buyStock);
+portfolioRouter.get("/port",verifyToken,getPortfolio);
 
 export default portfolioRouter;

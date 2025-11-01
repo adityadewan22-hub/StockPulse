@@ -26,6 +26,10 @@ const PortfolioSchema=new mongoose.Schema({
         type: Date,
         default: Date.now,
     },
+    profit:{
+        type:Number,
+        default:0
+    }
 });
 
 const Portfolio=mongoose.model("Portfolio",PortfolioSchema);
