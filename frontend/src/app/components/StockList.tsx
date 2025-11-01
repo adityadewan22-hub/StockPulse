@@ -3,7 +3,37 @@ import { symbol } from "framer-motion/client";
 import StockCard from "./StockCard";
 import StockLiveCard from "./StockLiveCard";
 
-const defaultStocks = ["AAPL", "MSFT", "GOOGL"];
+const defaultStocks = [
+  "AAPL",
+  "MSFT",
+  "GOOGL",
+  "AMZN",
+  "META",
+  "TSLA",
+  "NVDA",
+  "NFLX",
+  "BABA",
+  "ORCL",
+  "INTC",
+  "AMD",
+  "IBM",
+  "PYPL",
+  "ADBE",
+  "CRM",
+  "UBER",
+  "SHOP",
+  "SQ",
+  "DIS",
+  "KO",
+  "PEP",
+  "WMT",
+  "T",
+  "VZ",
+  "MA",
+  "V",
+  "NKE",
+  "JPM",
+];
 
 export default function StockList() {
   return (

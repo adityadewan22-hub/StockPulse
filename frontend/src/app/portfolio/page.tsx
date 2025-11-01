@@ -9,13 +9,15 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { getSocket } from "../components/Socket";
 import { Chart1 } from "@/components/ui/piechart";
-import { s } from "framer-motion/client";
+import { button, s } from "framer-motion/client";
+import { number } from "framer-motion";
 
 type PortfolioItem = {
   symbol: string;
   quantity: number;
   buyPrice: number;
   livePrice: number;
+  profit: number;
 };
 
 export default function Portfolio() {
@@ -24,7 +26,7 @@ export default function Portfolio() {
   const [totalValue, setTotalValue] = useState(0);
   const [invested, setInvested] = useState(0);
   const { token } = useAuth();
-  const [sold, setSold] = useState(0);
+  const [sold, setSold] = useState<{ [symbol: string]: number }>({});
   const router = useRouter();
   const socket = getSocket();
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -81,14 +83,15 @@ export default function Portfolio() {
       (acc, s) => acc + Number(s.livePrice) * Number(s.quantity),
       0
     );
+    const totalProfit = portfolio.reduce((acc, s) => acc + (s.profit || 0), 0);
     setInvested(investedTotal);
-    setProfit(currentValue - investedTotal);
     setTotalValue(currentValue);
+    setProfit(totalProfit);
   }, [portfolio]);
 
   const handleSell = async (
     symbol: string,
-    sold: number,
+    quantity: number,
     sellPrice: number
   ) => {
     try {
@@ -96,7 +99,7 @@ export default function Portfolio() {
         `${API_URL}/api/portfolio/sell`,
         {
           symbol,
-          sold,
+          quantity,
           sellPrice,
         },
         {
@@ -105,6 +108,12 @@ export default function Portfolio() {
           },
         }
       );
+      const res = await axios.get(`${API_URL}/api/portfolio/port`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setPortfolio(res.data);
       console.log("sell sucessfull", sell.data);
     } catch (err: any) {
       console.log(err.message);
@@ -127,11 +136,10 @@ export default function Portfolio() {
     { title: "Percentage Gain/Loss", value: `${Percentage}`, footer: "math" },
   ];
 
-  const sampleHoldings = [
-    { symbol: "AAPL", investmentPerStock: 15000 },
-    { symbol: "TSLA", investmentPerStock: 10000 },
-    { symbol: "GOOG", investmentPerStock: 5000 },
-  ];
+  const sampleHoldings = portfolio.map((s) => ({
+    symbol: s.symbol,
+    investmentPerStock: s.livePrice * s.quantity,
+  }));
   const value = 700;
   return (
     <div className=" min-h-screen bg-gray-950 text-white p-5 px-50 py-10 border-gray-300 ">
@@ -182,15 +190,25 @@ export default function Portfolio() {
                         <>
                           <input
                             type="number"
-                            value={sold}
-                            onChange={(e) => setSold(Number(e.target.value))}
+                            value={sold[stock.symbol] ?? 0}
+                            onChange={(e) =>
+                              setSold((prev: any) => ({
+                                ...prev,
+                                [stock.symbol]: Number(e.target.value),
+                              }))
+                            }
                             min={0}
                             max={stock.quantity}
                           />
                           <Button
-                            onClick={() =>
-                              handleSell(stock.symbol, sold, stock.livePrice)
-                            }
+                            onClick={() => {
+                              type: button;
+                              handleSell(
+                                stock.symbol,
+                                sold[stock.symbol],
+                                stock.livePrice
+                              );
+                            }}
                           >
                             Sell
                           </Button>
