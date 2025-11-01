@@ -7,11 +7,14 @@ import router from "./routes/stockRoutes.js";
 import { Server } from "socket.io";
 import http from "http";
 import axios from "axios";
+import WebSocket from "ws"
 import { getCache,setCache } from "./config/cache.js";
 import authRouter from "./routes/authRoutes.js";
 import stockAuth from "./middleware/socketAuth.js";
 import { subscriptions } from "./priceStore.js";
 import portfolioRouter from "./routes/portfolioRoutes.js";
+import { json } from "stream/consumers";
+import { type } from "os";
 
 dotenv.config();
 connectDB();
@@ -34,6 +37,12 @@ io.use(stockAuth);
 
 const apikey=process.env.FINNHUB_KEY;
 
+const ws=new WebSocket(`wss://ws.finnhub.io?token=${apikey}`);
+
+ws.on("open",()=>{
+  console.log("Websocket connection done");
+});
+
 app.use((req, res, next) => {
   console.log("Incoming request:", req.method, req.url);
   next();
@@ -49,90 +58,28 @@ io.on("connection",(socket)=>{
 socket.on("subscribeToStock",(symbol)=>{
   subscriptions[symbol]=(subscriptions[symbol]||0)+1;
   socket.subscribedSymbols.add(symbol);
-    console.log("Subscribe to:",symbol);
-
-const interval =setInterval(async()=>{
-    try{
-      let data=null;
-      try{
-        const cache=await getCache(symbol);
-      if(cache){
-        
-        console.log(`cache hit for ${symbol}`);
-        socket.emit("stockUpdate",{
-          symbol,
-          price:cache.c,
-          change:cache.d,
-          percentageChange:cache.dp,
-        });
-        return;
-      }
-    }
-      catch(redisERR){
-        console.log("redis get failed")
-      }
-      if(!data){
-        const response= await axios.get(
-            `https://finnhub.io/api/v1/quote`,{
-                params:{symbol, token:apikey}
-            }
-        );
-        data=response.data;
-      }
-      console.log("Fetched data:",data);
-
-        
-if (!data || Object.keys(data).length === 0) {
-  console.log("No data received for", symbol);
-  return;
-}
-try{
-  await setCache(symbol,data,15);
-}catch(redisERR){
-  console.log("redis failed, skipping cache");
-}
-
-
-socket.emit("stockUpdate", {
-  symbol,
-  price:data.c,
-  change:data.d,
-  percentageChange:data.dp
-});
-    }
-    catch(err){
-        if (err.response) {
-    console.log("Status:", err.response.status);
-    console.log("Headers:", err.response.headers);
-    console.log("Data:", err.response.data);
-  } else {
-    console.error("Error:", err.message);
-  }
-    }
-},15000);
-if(!socket.intervals){
-  socket.intervals=[];
-}
-socket.intervals.push(interval);
-
+  ws.send(JSON.stringify({type:"subscribe",symbol}))
+   console.log("Subscribe to:",symbol);
 });
 
 socket.on("disconnect",()=>{
-  if(socket.intervals){
-    for(const i of socket.intervals){
-      clearInterval(i);
-    }
-  }
   for(const symbol of socket.subscribedSymbols){
     subscriptions[symbol]=subscriptions[symbol]-1;
     if(subscriptions[symbol]<=0){
       delete subscriptions[symbol];
+      ws.send(JSON.stringify({type:"unsubscribe",symbol}));
       console.log(`unsubscribed from ${symbol}`)
     }
   }
   console.log("client disconnected:-",socket.id);
 })
 });
+
+ws.on("message", data => console.log("Raw message from Finnhub:", data))
+ws.on("message",(data)=>{
+  const stockData=JSON.parse(data)
+  io.emit("stockUpdate",stockData)
+})
 
 
 
