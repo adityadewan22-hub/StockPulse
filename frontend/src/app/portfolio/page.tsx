@@ -124,16 +124,24 @@ export default function Portfolio() {
   const cards = [
     {
       title: "Total Portfolio Value",
-      value: `${totalValue}`,
+      value: `${totalValue.toFixed(3)}`,
       footer: "Your total value",
     },
     {
       title: "Total Invested",
-      value: `${invested}`,
+      value: `${invested.toFixed(3)}`,
       footer: "Your money spent",
     },
-    { title: "Total Profit", value: `${profit}`, footer: "Your gain" },
-    { title: "Percentage Gain/Loss", value: `${Percentage}`, footer: "math" },
+    {
+      title: "Total Profit",
+      value: `${profit.toFixed(3)}`,
+      footer: "Your gain",
+    },
+    {
+      title: "Percentage Gain/Loss",
+      value: `${Percentage.toFixed(3)}`,
+      footer: "math",
+    },
   ];
 
   const sampleHoldings = portfolio.map((s) => ({

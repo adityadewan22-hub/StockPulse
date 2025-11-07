@@ -19,10 +19,28 @@ export default function StockLiveCard({ symbol }: StockLiveCardProp) {
   const [price, setPrice] = useState<number | null>(null);
   const [prevPrice, setPrevPrice] = useState<number | null>(null);
   const [status, setStatus] = useState<"up" | "down" | "neutral">("neutral");
-  const intervalRef = useRef<any>(null);
   const [quantity, setQuantity] = useState(0);
+  const [marketOpen, setMarketOpen] = useState<boolean | null>(null);
   const { token } = useAuth();
   const socket = getSocket();
+
+  useEffect(() => {
+    if (!socket) {
+      return;
+    }
+    const handleMarket = ({ isOpen }: { isOpen: boolean }) => {
+      if (!isOpen) {
+        alert("Market is closed. Showing last known prices");
+      } else {
+        console.log("market is open");
+      }
+      setMarketOpen(isOpen);
+    };
+    socket.on("marketStatus", handleMarket);
+    return () => {
+      socket.off("marketStatus", handleMarket);
+    };
+  }, [socket]);
 
   useEffect(() => {
     socket.emit("subscribeToStock", symbol);
@@ -43,12 +61,11 @@ export default function StockLiveCard({ symbol }: StockLiveCardProp) {
         }
       }
     });
-
     return () => {
       socket.off("stockUpdate");
       socket.emit("unsubscribeFromStock", symbol);
     };
-  }, [symbol]);
+  }, []);
 
   const handleBuy = async (
     symbol: string,
@@ -87,13 +104,24 @@ export default function StockLiveCard({ symbol }: StockLiveCardProp) {
   }
 
   return (
-    <div className=" flex justify-center items-center bg-cover bg-center">
+    <div className=" flex justify-center bg-cover bg-center">
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
         className="p-4 border rounded-xl shadow-md bg-white w-64 text-center "
       >
+        {marketOpen !== null && (
+          <div
+            className={`text-white font-medium mb-2 px-2 py-1 rounded ${
+              marketOpen
+                ? "bg-green-100 text-green-700"
+                : "bg-red-100 text-red-700"
+            }`}
+          >
+            {marketOpen ? "Maket Open" : "Market Closed"}
+          </div>
+        )}
         <h2 className="text-lg font-semibold">{symbol}</h2>
         <motion.p
           key={price}

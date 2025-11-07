@@ -2,9 +2,11 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
 
 const StockCard = ({ symbol }: { symbol: string }) => {
   const [data, setData] = useState<any>(null);
+  const [quantity, setQuantity] = useState(0);
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
   const token = localStorage.getItem("token");
@@ -20,6 +22,31 @@ const StockCard = ({ symbol }: { symbol: string }) => {
     };
     fetchData();
   }, [symbol]);
+
+  const handleBuy = async (
+    symbol: string,
+    quantity: number,
+    buyPrice: number
+  ) => {
+    try {
+      const buy = await axios.post(
+        `${API_URL}/api/portfolio/buy`,
+        {
+          symbol,
+          quantity,
+          buyPrice: data.c,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      alert(buy.data.message || "stock bought");
+    } catch (err: any) {
+      console.log("error buying stock", err.message);
+    }
+  };
 
   const color =
     status === "up"
@@ -45,6 +72,15 @@ const StockCard = ({ symbol }: { symbol: string }) => {
         >
           {data?.c ?? "--"}
         </motion.p>
+        <input
+          type="number"
+          value={quantity}
+          min={0}
+          onChange={(e) => setQuantity(Number(e.target.value))}
+        />
+        <Button onClick={() => handleBuy(symbol, quantity, data?.c)}>
+          Buy
+        </Button>
       </motion.div>
     </div>
   );
