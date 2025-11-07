@@ -1,7 +1,6 @@
 import express, { response } from "express";
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
-import cookieParser from "cookie-parser";
 import cors from "cors";
 import router from "./routes/stockRoutes.js";
 import { Server } from "socket.io";
@@ -13,8 +12,7 @@ import authRouter from "./routes/authRoutes.js";
 import stockAuth from "./middleware/socketAuth.js";
 import { subscriptions } from "./priceStore.js";
 import portfolioRouter from "./routes/portfolioRoutes.js";
-import { json } from "stream/consumers";
-import { type } from "os";
+import isOpen from "../utils/checkMarket.js";
 
 dotenv.config();
 connectDB();
@@ -37,11 +35,8 @@ io.use(stockAuth);
 
 const apikey=process.env.FINNHUB_KEY;
 
-const ws=new WebSocket(`wss://ws.finnhub.io?token=${apikey}`);
+let ws=null;
 
-ws.on("open",()=>{
-  console.log("Websocket connection done");
-});
 
 app.use((req, res, next) => {
   console.log("Incoming request:", req.method, req.url);
@@ -58,7 +53,9 @@ io.on("connection",(socket)=>{
 socket.on("subscribeToStock",(symbol)=>{
   subscriptions[symbol]=(subscriptions[symbol]||0)+1;
   socket.subscribedSymbols.add(symbol);
-  ws.send(JSON.stringify({type:"subscribe",symbol}))
+  if(ws){
+    ws.send(JSON.stringify({type:"subscribe",symbol}))
+  }
    console.log("Subscribe to:",symbol);
 });
 
@@ -67,7 +64,9 @@ socket.on("disconnect",()=>{
     subscriptions[symbol]=subscriptions[symbol]-1;
     if(subscriptions[symbol]<=0){
       delete subscriptions[symbol];
+      if(ws){
       ws.send(JSON.stringify({type:"unsubscribe",symbol}));
+      }
       console.log(`unsubscribed from ${symbol}`)
     }
   }
@@ -75,17 +74,48 @@ socket.on("disconnect",()=>{
 })
 });
 
-ws.on("message", data => console.log("Raw message from Finnhub:", data))
-ws.on("message",(data)=>{
-  const stockData=JSON.parse(data)
-  io.emit("stockUpdate",stockData)
-})
-
-
-
 app.use("/api/stocks", router); 
 
 
-server.listen(5000,'0.0.0.0',()=>console.log("server running on port 5000"));
+server.listen(5000,'0.0.0.0',()=>{
+  console.log("server running on port 5000");
+  setupFinnhubConnection();
+}
+);
+
+async function setupFinnhubConnection() {
+  try {
+    const open = await isOpen();
+    if (open) {
+      ws = new WebSocket(`wss://ws.finnhub.io?token=${apikey}`);
+
+      ws.on("open", () => console.log("Finnhub WS connected"));
+      io.emit("marketStatus",{isOpen:true});
+
+     ws.on("message", (data) => {
+  try {
+    const parsed = JSON.parse(data.toString());
+    if (parsed.type === "trade" && parsed.data?.length) {
+      parsed.data.forEach((trade) => {
+        io.emit("stockUpdate", {
+          symbol: trade.s,
+          price: trade.p,
+          volume: trade.v,
+          time: trade.t,
+        });
+      });
+    }
+  } catch (err) {
+    console.error("Error parsing:", err);
+  }
+});
+    } else {
+      console.log("market closed")
+      io.emit("marketStatus", { isOpen: false });
+    }
+  } catch (err) {
+    console.error("Error setting up Finnhub WS:", err);
+  }
+}
 
 
