@@ -15,7 +15,7 @@ export default function Dashboard() {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const [marketOpen, setMarketOpen] = useState<boolean | null>(null);
   const { token } = useAuth();
-  const [quantities, setQuantities] = useState<number[]>([]);
+  const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [data, setData] = useState<any>();
   const [stocks, setStocks] = useState<any[]>([]);
   const socket = getSocket();
