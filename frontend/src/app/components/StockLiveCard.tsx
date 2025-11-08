@@ -25,47 +25,30 @@ export default function StockLiveCard({ symbol }: StockLiveCardProp) {
   const socket = getSocket();
 
   useEffect(() => {
-    if (!socket) {
-      return;
-    }
-    const handleMarket = ({ isOpen }: { isOpen: boolean }) => {
-      if (!isOpen) {
-        alert("Market is closed. Showing last known prices");
-      } else {
-        console.log("market is open");
-      }
-      setMarketOpen(isOpen);
-    };
-    socket.on("marketStatus", handleMarket);
-    return () => {
-      socket.off("marketStatus", handleMarket);
-    };
-  }, [socket]);
-
-  useEffect(() => {
-    socket.emit("subscribeToStock", symbol);
-    socket.on("stockUpdate", (data) => {
+    const handleStockUpdate = (data: any) => {
       if (data.symbol === symbol) {
-        setPrevPrice(price);
-        const newPrev = price;
-        const newPrice = Number(data.price);
-        setPrice(Number(data.price));
-        if (newPrev !== null) {
-          if (newPrice > newPrev) {
-            setStatus("up");
-          } else if (newPrice < newPrev) {
-            setStatus("down");
-          } else {
-            setStatus("neutral");
+        setPrice((prevPrice) => {
+          const newPrice = Number(data.price);
+
+          if (prevPrice !== null) {
+            if (newPrice > prevPrice) setStatus("up");
+            else if (newPrice < prevPrice) setStatus("down");
+            else setStatus("neutral");
           }
-        }
+
+          setPrevPrice(prevPrice);
+          return newPrice;
+        });
       }
-    });
+    };
+    socket.emit("subscribeToStock", symbol);
+    socket.on("stockUpdate", handleStockUpdate);
+
     return () => {
-      socket.off("stockUpdate");
+      socket.off("stockUpdate", handleStockUpdate);
       socket.emit("unsubscribeFromStock", symbol);
     };
-  }, []);
+  }, [symbol, socket]);
 
   const handleBuy = async (
     symbol: string,
@@ -104,41 +87,34 @@ export default function StockLiveCard({ symbol }: StockLiveCardProp) {
   }
 
   return (
-    <div className=" flex justify-center bg-cover bg-center">
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-        className="p-4 border rounded-xl shadow-md bg-white w-64 text-center "
-      >
-        {marketOpen !== null && (
-          <div
-            className={`text-white font-medium mb-2 px-2 py-1 rounded ${
-              marketOpen
-                ? "bg-green-100 text-green-700"
-                : "bg-red-100 text-red-700"
-            }`}
-          >
-            {marketOpen ? "Maket Open" : "Market Closed"}
-          </div>
-        )}
-        <h2 className="text-lg font-semibold">{symbol}</h2>
-        <motion.p
-          key={price}
-          animate={{ scale: [1, 1.2, 1] }}
+    <div>
+      <div className="flex justify-center">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
-          className={`text-2xl font-bold mt-2 ${color}`}
+          className="p-4 border rounded-xl shadow-md bg-gray w-64 text-center "
         >
-          {price ?? "--"}
-        </motion.p>
-        <input
-          type="number"
-          value={quantity}
-          min={0}
-          onChange={(e) => setQuantity(Number(e.target.value))}
-        />
-        <Button onClick={() => handleBuy(symbol, quantity, price)}>Buy</Button>
-      </motion.div>
+          <h2 className="text-lg font-semibold">{symbol}</h2>
+          <motion.p
+            key={price}
+            animate={{ scale: [1, 1.2, 1] }}
+            transition={{ duration: 0.3 }}
+            className={`text-2xl font-bold mt-2 ${color}`}
+          >
+            {price ?? "--"}
+          </motion.p>
+          <input
+            type="number"
+            value={quantity}
+            min={0}
+            onChange={(e) => setQuantity(Number(e.target.value))}
+          />
+          <Button onClick={() => handleBuy(symbol, quantity, price)}>
+            Buy
+          </Button>
+        </motion.div>
+      </div>
     </div>
   );
 }

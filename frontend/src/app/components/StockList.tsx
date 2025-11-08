@@ -44,12 +44,14 @@ export default function StockList() {
     }
   }, [socket]);
 
-  if (!defaultStocks.length)
+  const fodder = ["AAPL", "MSFT", "GOOGL", "AMZN"];
+
+  if (!fodder.length)
     return <div className="text-white">No stocks found in your portfolio.</div>;
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      {defaultStocks.map((symbol) => (
+    <div className="flex flex-wrap justify-center gap-2">
+      {fodder.map((symbol) => (
         <StockLiveCard key={symbol} symbol={symbol} />
       ))}
     </div>
