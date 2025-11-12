@@ -8,6 +8,7 @@ import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "../context/authContext";
 import { getSocket } from "./Socket";
+import { DashboardCard } from "@/components/ui/cards";
 
 type StockLiveCardProp = {
   symbol: string;
@@ -23,6 +24,7 @@ export default function StockLiveCard({ symbol }: StockLiveCardProp) {
   const [marketOpen, setMarketOpen] = useState<boolean | null>(null);
   const { token } = useAuth();
   const socket = getSocket();
+  const MotionCard = motion(DashboardCard);
 
   useEffect(() => {
     const handleStockUpdate = (data: any) => {
@@ -87,34 +89,29 @@ export default function StockLiveCard({ symbol }: StockLiveCardProp) {
   }
 
   return (
-    <div>
-      <div className="flex justify-center">
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-          className="p-4 border rounded-xl shadow-md bg-gray w-64 text-center "
-        >
-          <h2 className="text-lg font-semibold">{symbol}</h2>
-          <motion.p
-            key={price}
-            animate={{ scale: [1, 1.2, 1] }}
-            transition={{ duration: 0.3 }}
-            className={`text-2xl font-bold mt-2 ${color}`}
-          >
-            {price ?? "--"}
-          </motion.p>
-          <input
-            type="number"
-            value={quantity}
-            min={0}
-            onChange={(e) => setQuantity(Number(e.target.value))}
-          />
-          <Button onClick={() => handleBuy(symbol, quantity, price)}>
-            Buy
-          </Button>
-        </motion.div>
-      </div>
+    <div className="flex justify-center items-center">
+      <DashboardCard
+        title={symbol}
+        subtitle="Current Price"
+        value={<p className={`text-2xl font-bold ${color}`}>{price ?? "--"}</p>}
+        footer={
+          <div className="flex flex-col items-center w-full space-y-2">
+            <input
+              type="number"
+              value={quantity}
+              min={0}
+              onChange={(e) => setQuantity(Number(e.target.value))}
+              className="w-20 text-black rounded-md px-2 py-1 text-center outline-none"
+            />
+            <Button
+              onClick={() => handleBuy(symbol, quantity, price)}
+              className="w-full bg-green-600 hover:bg-green-700"
+            >
+              Buy
+            </Button>
+          </div>
+        }
+      />
     </div>
   );
 }

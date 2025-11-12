@@ -50,7 +50,7 @@ export default function StockList() {
     return <div className="text-white">No stocks found in your portfolio.</div>;
 
   return (
-    <div className="flex flex-wrap justify-center gap-2">
+    <div className="flex flex-wrap justify-center gap-4">
       {fodder.map((symbol) => (
         <StockLiveCard key={symbol} symbol={symbol} />
       ))}

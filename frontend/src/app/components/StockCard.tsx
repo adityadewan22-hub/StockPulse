@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { DashboardCard } from "@/components/ui/cards";
 
 const StockCard = ({ symbol }: { symbol: string }) => {
   const [data, setData] = useState<any>(null);
@@ -56,32 +57,31 @@ const StockCard = ({ symbol }: { symbol: string }) => {
       : "text-gray-700";
 
   return (
-    <div className=" flex justify-center items-center bg-cover bg-center">
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-        className="p-4 border rounded-xl shadow-md bg-white w-64 text-center "
-      >
-        <h2 className="text-lg font-semibold">{symbol}</h2>
-        <motion.p
-          key={data?.c}
-          animate={{ scale: [1, 1.2, 1] }}
-          transition={{ duration: 0.3 }}
-          className={`text-2xl font-bold mt-2 ${color}`}
-        >
-          {data?.c ?? "--"}
-        </motion.p>
-        <input
-          type="number"
-          value={quantity}
-          min={0}
-          onChange={(e) => setQuantity(Number(e.target.value))}
-        />
-        <Button onClick={() => handleBuy(symbol, quantity, data?.c)}>
-          Buy
-        </Button>
-      </motion.div>
+    <div className="flex justify-center ">
+      <DashboardCard
+        title={symbol}
+        subtitle="Current Price"
+        value={
+          <p className={`text-2xl font-bold ${color}`}>{data?.c ?? "--"}</p>
+        }
+        footer={
+          <div className="flex flex-col items-center ">
+            <input
+              type="number"
+              value={quantity}
+              min={0}
+              onChange={(e) => setQuantity(Number(e.target.value))}
+              className=""
+            />
+            <Button
+              onClick={() => handleBuy(symbol, quantity, data?.c)}
+              className=" bg-green-600 hover:bg-green-700"
+            >
+              Buy
+            </Button>
+          </div>
+        }
+      />
     </div>
   );
 };

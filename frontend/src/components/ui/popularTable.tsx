@@ -28,20 +28,17 @@ export const PopularTable = ({
   holdings,
 }: PopularTableProps) => {
   return (
-    <section>
-      <h2 className="text-xl text-white font-semibold mb-3">{title}</h2>
+    <section className="w-full">
+      <h2 className="text-xl text-gray font-semibold mb-3">{title}</h2>
       <div className="bg-neutral-800 rounded border border-neutral-700 p-4 text-white">
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead className="text-white">Symbol</TableHead>
-              <TableHead className="text-white">Company</TableHead>
+
               <TableHead className="text-right text-white">Price</TableHead>
               <TableHead className="text-right text-white">Change</TableHead>
               <TableHead className="text-right text-white">Volume</TableHead>
-              <TableHead className="text-right text-white">
-                Market Cap
-              </TableHead>
               <TableHead className="text-right text-white">Action</TableHead>
             </TableRow>
           </TableHeader>
@@ -50,7 +47,7 @@ export const PopularTable = ({
             {holdings.map((p) => (
               <TableRow key={p.symbol}>
                 <TableCell className="font-medium">{p.symbol}</TableCell>
-                <TableCell>{p.name}</TableCell>
+
                 <TableCell className="text-right">${p.price}</TableCell>
                 <TableCell
                   className={`text-right ${
@@ -62,7 +59,7 @@ export const PopularTable = ({
                     : `▼ ${Math.abs(p.change)}%`}
                 </TableCell>
                 <TableCell className="text-right">{p.volume}</TableCell>
-                <TableCell className="text-right">{p.mcap}</TableCell>
+
                 <TableCell className="text-right">{p.btn || "-"}</TableCell>
               </TableRow>
             ))}

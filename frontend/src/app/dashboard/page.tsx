@@ -10,6 +10,7 @@ import { PopularTable } from "@/components/ui/popularTable";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "../context/authContext";
 import { getSocket } from "../components/Socket";
+import { mark, symbol } from "framer-motion/client";
 
 export default function Dashboard() {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -34,12 +35,19 @@ export default function Dashboard() {
   ];
 
   useEffect(() => {
+    if (!socket) {
+      return;
+    }
     setStocks(stocklist.map((s) => ({ ...s, price: 0 })));
+
     socket.emit(
       "subscribeToStock",
       stocklist.map((s) => s.symbol)
     );
     socket.on("stockUpdate", (update) => {
+      if (!update.symbol) {
+        return;
+      }
       setStocks((prev) => {
         return prev.map((s) =>
           s.symbol === update.symbol ? { ...s, ...update } : s
@@ -68,6 +76,38 @@ export default function Dashboard() {
     handleMarket();
   }, []);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!marketOpen && stocks.length > 0) {
+        try {
+          const res = await Promise.all(
+            stocklist.map((s) =>
+              axios.get(`${API_URL}/api/stocks/${s.symbol}`, {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              })
+            )
+          );
+          console.log(
+            "Static API responses:",
+            res.map((r) => r.data)
+          );
+          const updatedStocks = stocklist.map((s, i) => ({
+            ...s,
+            price: res[i].data.c,
+            change: res[i].data.dp,
+            volume: "NaN",
+          }));
+          setStocks(updatedStocks);
+        } catch (err: any) {
+          console.log(err.message);
+        }
+      }
+    };
+    fetchData();
+  }, [marketOpen]);
+
   const handleBuy = async (
     symbol: string,
     quantity: number,
@@ -95,8 +135,9 @@ export default function Dashboard() {
 
   return (
     <ProtectRoute>
-      <div>
-        <main className=" min-h-screen bg-gray-950 ">
+      <div className="relative min-h-screen overflow-hidden bg-gray-950 text-white">
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-800/20 via-purple-700/20 to-black blur-3xl pointer-events-none z-0"></div>
+        <main className="relative z-10 min-h-screen  ">
           {marketOpen !== null && (
             <div
               className={`text-3xl font-bold flex justify-center py-3 ${
@@ -109,40 +150,43 @@ export default function Dashboard() {
           <h1 className="text-3xl flex justify-center font-bold text-white mb-6 ">
             📊 StockPulse Live
           </h1>
+
           <div className="flex justify-center text-white">My Stocks</div>
           <StockList />
-          <DashboardCard
-            title="Live Stocks"
-            subtitle="Real-time prices from your watchlist"
-            value={
-              <PopularTable
-                holdings={stocks.map((s) => ({
-                  ...s,
-                  btn: (
-                    <>
-                      <input
-                        type="number"
-                        value={quantities[s.symbol]}
-                        onChange={(e) =>
-                          setQuantities((prev) => ({
-                            ...prev,
-                            [s.symbol]: Number(e.target.value),
-                          }))
-                        }
-                      />
-                      <Button
-                        onClick={() =>
-                          handleBuy(s.symbol, quantities[s.symbol], s.c)
-                        }
-                      >
-                        Buy
-                      </Button>
-                    </>
-                  ),
-                }))}
-              />
-            }
-          />
+          <div className="py-4">
+            <DashboardCard
+              title="Live Stocks"
+              subtitle="Real-time prices from your watchlist"
+              value={
+                <PopularTable
+                  holdings={stocks.map((s) => ({
+                    ...s,
+                    btn: (
+                      <div className="flex items-center ">
+                        <input
+                          type="number"
+                          value={quantities[s.symbol] ?? ""}
+                          onChange={(e) =>
+                            setQuantities((prev) => ({
+                              ...prev,
+                              [s.symbol]: Number(e.target.value),
+                            }))
+                          }
+                        />
+                        <Button
+                          onClick={() =>
+                            handleBuy(s.symbol, quantities[s.symbol], s.c)
+                          }
+                        >
+                          Buy
+                        </Button>
+                      </div>
+                    ),
+                  }))}
+                />
+              }
+            />
+          </div>
         </main>
       </div>
     </ProtectRoute>

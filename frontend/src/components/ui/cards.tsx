@@ -21,7 +21,7 @@ export function DashboardCard({
   footer,
 }: DashboardCardProps) {
   return (
-    <Card className="bg-white">
+    <Card style={{ backgroundColor: "#0a0102ff" }} className="text-white">
       <CardHeader>
         <CardTitle className="text-sm font-bold text-gray-500 ">
           {title}
