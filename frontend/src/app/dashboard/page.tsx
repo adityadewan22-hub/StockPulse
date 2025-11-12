@@ -147,13 +147,15 @@ export default function Dashboard() {
               {marketOpen ? "Market Open" : "Market Closed"}
             </div>
           )}
-          <h1 className="text-3xl flex justify-center font-bold text-white mb-6 ">
+          <h1 className="text-3xl flex justify-center font-bold text-blue-800 mb-6 ">
             📊 StockPulse Live
           </h1>
 
-          <div className="flex justify-center text-white">My Stocks</div>
+          <div className="flex justify-center text-gray-400 text-xl">
+            My Stocks
+          </div>
           <StockList />
-          <div className="py-4">
+          <div className="flex justify-left w-full px-68 py-10">
             <DashboardCard
               title="Live Stocks"
               subtitle="Real-time prices from your watchlist"
@@ -172,6 +174,7 @@ export default function Dashboard() {
                               [s.symbol]: Number(e.target.value),
                             }))
                           }
+                          className="w-half"
                         />
                         <Button
                           onClick={() =>

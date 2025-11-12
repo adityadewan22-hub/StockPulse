@@ -71,7 +71,7 @@ const StockCard = ({ symbol }: { symbol: string }) => {
               value={quantity}
               min={0}
               onChange={(e) => setQuantity(Number(e.target.value))}
-              className=""
+              className="w-1/2 bg-gray-600 border rounded"
             />
             <Button
               onClick={() => handleBuy(symbol, quantity, data?.c)}

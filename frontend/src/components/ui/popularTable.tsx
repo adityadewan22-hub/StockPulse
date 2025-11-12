@@ -29,26 +29,30 @@ export const PopularTable = ({
 }: PopularTableProps) => {
   return (
     <section className="w-full">
-      <h2 className="text-xl text-gray font-semibold mb-3">{title}</h2>
+      <h2 className="text-xl text-gray-500 font-semibold mb-3">{title}</h2>
       <div className="bg-neutral-800 rounded border border-neutral-700 p-4 text-white">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="text-white">Symbol</TableHead>
+              <TableHead className="text-gray-500">Symbol</TableHead>
 
-              <TableHead className="text-right text-white">Price</TableHead>
-              <TableHead className="text-right text-white">Change</TableHead>
-              <TableHead className="text-right text-white">Volume</TableHead>
-              <TableHead className="text-right text-white">Action</TableHead>
+              <TableHead className="text-right text-gray-500">Price</TableHead>
+              <TableHead className="text-right text-gray-500">Change</TableHead>
+              <TableHead className="text-right text-gray-500">Volume</TableHead>
+              <TableHead className="text-right text-gray-500">Action</TableHead>
             </TableRow>
           </TableHeader>
 
           <TableBody>
             {holdings.map((p) => (
               <TableRow key={p.symbol}>
-                <TableCell className="font-medium">{p.symbol}</TableCell>
+                <TableCell className="font-medium text-gray-400">
+                  {p.symbol}
+                </TableCell>
 
-                <TableCell className="text-right">${p.price}</TableCell>
+                <TableCell className="text-right text-gray-400">
+                  ${p.price}
+                </TableCell>
                 <TableCell
                   className={`text-right ${
                     p.change >= 0 ? "text-emerald-300" : "text-rose-300"
