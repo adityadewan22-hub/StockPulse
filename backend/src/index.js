@@ -37,7 +37,6 @@ const apikey=process.env.FINNHUB_KEY;
 
 let ws=null;
 
-
 app.use((req, res, next) => {
   console.log("Incoming request:", req.method, req.url);
   next();
@@ -45,18 +44,33 @@ app.use((req, res, next) => {
 
 app.get("/",(req,res)=>res.send("StockPulse Websocket Server Running"));
 
+app.get("/api/market-status", async (req, res) => {
+  try {
+    const open = await isOpen();
+    res.json({ isOpen: open });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch market status" });
+  }
+});
+
 io.on("connection",(socket)=>{
     console.log("client connected:",socket.id);
 
     socket.subscribedSymbols=new Set();
 
-socket.on("subscribeToStock",(symbol)=>{
-  subscriptions[symbol]=(subscriptions[symbol]||0)+1;
-  socket.subscribedSymbols.add(symbol);
-  if(ws){
-    ws.send(JSON.stringify({type:"subscribe",symbol}))
+socket.on("subscribeToStock", (symbols) => {
+  const symbolArray = Array.isArray(symbols) ? symbols : [symbols];
+
+  for (const symbol of symbolArray) {
+    subscriptions[symbol] = (subscriptions[symbol] || 0) + 1;
+    socket.subscribedSymbols.add(symbol);
+
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify({ type: "subscribe", symbol }));
+    }
   }
-   console.log("Subscribe to:",symbol);
+
+  console.log("Subscribed to:", symbolArray);
 });
 
 socket.on("disconnect",()=>{
@@ -85,8 +99,6 @@ server.listen(5000,'0.0.0.0',()=>{
 
 async function setupFinnhubConnection() {
   try {
-    const open = await isOpen();
-    if (open) {
       ws = new WebSocket(`wss://ws.finnhub.io?token=${apikey}`);
 
       ws.on("open", () => console.log("Finnhub WS connected"));
@@ -109,11 +121,7 @@ async function setupFinnhubConnection() {
     console.error("Error parsing:", err);
   }
 });
-    } else {
-      console.log("market closed")
-      io.emit("marketStatus", { isOpen: false });
-    }
-  } catch (err) {
+    }catch (err) {
     console.error("Error setting up Finnhub WS:", err);
   }
 }
