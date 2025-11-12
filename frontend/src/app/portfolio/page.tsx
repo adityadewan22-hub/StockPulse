@@ -150,23 +150,26 @@ export default function Portfolio() {
   }));
   const value = 700;
   return (
-    <div className=" min-h-screen bg-gray-950 text-white p-5 px-50 py-10 border-gray-300 ">
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-800/20 via-purple-700/10 pointer-events-none "></div>
-      <div className="max-w-7xl mx-auto ">
-        <div className="flex justify-between items-center max-w-7xl mx-auto">
-          <h1 className="text-3xl font-semibold py-10">
-            Stock Portfolio Dashboard
-          </h1>
-          <Button asChild>
-            <button onClick={() => router.push("/")} className="cursor-pointer">
-              Home
-            </button>
+    <div className="relative min-h-screen bg-gray-950 text-white overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-800/30 via-purple-700/20 to-black blur-3xl pointer-events-none z-0"></div>
+      <main className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 py-12">
+        <div className="flex flex-col md:flex-row justify-between items-center mb-10">
+          <div>
+            <h1 className="text-4xl font-extrabold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
+              📈 Stock Portfolio Dashboard
+            </h1>
+            <p className="text-gray-400 text-lg">
+              Track your holdings, profits, and reinvestments in real-time.
+            </p>
+          </div>
+          <Button
+            onClick={() => router.push("/")}
+            className="mt-6 md:mt-0 bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-5"
+          >
+            Home
           </Button>
         </div>
-        <p className="text-muted-foreground">
-          Track your dividend returns and reinvestments
-        </p>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 py-4 ">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
           {cards.map((card) => (
             <DashboardCard
               key={card.title}
@@ -176,69 +179,76 @@ export default function Portfolio() {
             />
           ))}
         </div>
-        <div>
-          <Tabs defaultValue="holdings" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 w-1/4 h-8 border rounded-xl ">
-              <TabsTrigger value="holdings" className="h-6">
+        <Tabs defaultValue="holdings" className="w-full">
+          <div className="flex justify-center mb-6">
+            <TabsList className="bg-gray-900/60 border border-gray-800 rounded-xl w-full max-w-sm h-10 grid grid-cols-2">
+              <TabsTrigger
+                value="holdings"
+                className="data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg text-gray-300 hover:bg-gray-800 transition-all"
+              >
                 Holdings
               </TabsTrigger>
-              <TabsTrigger value="charts" className="h-6">
+              <TabsTrigger
+                value="charts"
+                className="data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg text-gray-300 hover:bg-gray-800 transition-all"
+              >
                 Charts
               </TabsTrigger>
             </TabsList>
-
-            <TabsContent value="holdings" className="py-6">
-              <DashboardCard
-                title="Portfolio Holdings"
-                value={
-                  <HoldingsTable
-                    holdings={portfolio.map((stock) => ({
-                      ...stock,
-                      btn: (
-                        <>
-                          <input
-                            type="number"
-                            value={sold[stock.symbol] ?? 0}
-                            onChange={(e) =>
-                              setSold((prev: any) => ({
-                                ...prev,
-                                [stock.symbol]: Number(e.target.value),
-                              }))
-                            }
-                            min={0}
-                            max={stock.quantity}
-                          />
-                          <Button
-                            onClick={() => {
-                              type: button;
-                              handleSell(
-                                stock.symbol,
-                                sold[stock.symbol],
-                                stock.livePrice
-                              );
-                            }}
-                          >
-                            Sell
-                          </Button>
-                        </>
-                      ),
-                    }))}
-                    totalValue={value}
-                  />
-                }
-                subtitle="Detailed view of your current stock positions, dividends, and reinvestments"
-              />
-            </TabsContent>
-
-            <TabsContent value="charts">
-              <DashboardCard
-                title="Portfolio Holdings"
-                value=<Chart1 shares={sampleHoldings} />
-              ></DashboardCard>
-            </TabsContent>
-          </Tabs>
-        </div>
-      </div>
+          </div>
+          <TabsContent value="holdings" className="py-6">
+            <DashboardCard
+              title="Portfolio Holdings"
+              subtitle="Detailed view of your current stock positions, dividends, and reinvestments"
+              value={
+                <HoldingsTable
+                  holdings={portfolio.map((stock) => ({
+                    ...stock,
+                    btn: (
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="number"
+                          min={0}
+                          max={stock.quantity}
+                          placeholder="Qty"
+                          value={sold[stock.symbol] ?? ""}
+                          onChange={(e) =>
+                            setSold((prev) => ({
+                              ...prev,
+                              [stock.symbol]: Number(e.target.value),
+                            }))
+                          }
+                          className="w-20 px-2 py-1 bg-gray-800 text-white border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                        />
+                        <Button
+                          onClick={() =>
+                            handleSell(
+                              stock.symbol,
+                              sold[stock.symbol],
+                              stock.livePrice
+                            )
+                          }
+                          className="bg-red-600 hover:bg-red-700 text-white"
+                        >
+                          Sell
+                        </Button>
+                      </div>
+                    ),
+                  }))}
+                  totalValue={value}
+                />
+              }
+            />
+          </TabsContent>
+          <TabsContent value="charts" className="py-6">
+            <DashboardCard
+              title="Portfolio Distribution"
+              subtitle="Visual representation of your investments by stock"
+              value={<Chart1 shares={sampleHoldings} />}
+            />
+          </TabsContent>
+        </Tabs>
+      </main>
     </div>
   );
 }
