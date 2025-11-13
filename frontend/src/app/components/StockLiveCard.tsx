@@ -89,23 +89,23 @@ export default function StockLiveCard({ symbol }: StockLiveCardProp) {
   }
 
   return (
-    <div className="flex justify-center items-center">
+    <div className="flex justify-center ">
       <DashboardCard
         title={symbol}
         subtitle="Current Price"
         value={<p className={`text-2xl font-bold ${color}`}>{price ?? "--"}</p>}
         footer={
-          <div className="flex flex-col items-center w-full space-y-2">
+          <div className="flex flex-col items-center ">
             <input
               type="number"
               value={quantity}
               min={0}
               onChange={(e) => setQuantity(Number(e.target.value))}
-              className="w-20 text-black rounded-md px-2 py-1 text-center outline-none"
+              className="w-1/2 bg-gray-600 border rounded"
             />
             <Button
               onClick={() => handleBuy(symbol, quantity, price)}
-              className="w-full bg-green-600 hover:bg-green-700"
+              className=" bg-green-600 hover:bg-green-700"
             >
               Buy
             </Button>
