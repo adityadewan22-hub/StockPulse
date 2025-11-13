@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "../context/authContext";
 import { getSocket } from "../components/Socket";
 import { mark, symbol } from "framer-motion/client";
+import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -20,6 +21,7 @@ export default function Dashboard() {
   const [data, setData] = useState<any>();
   const [stocks, setStocks] = useState<any[]>([]);
   const socket = getSocket();
+  const router = useRouter();
 
   const stocklist = [
     { symbol: "AAPL" },
@@ -132,6 +134,9 @@ export default function Dashboard() {
       console.log("error buying stock", err.message);
     }
   };
+  const handlePortfolio = () => {
+    router.push("/portfolio");
+  };
 
   return (
     <ProtectRoute>
@@ -149,9 +154,21 @@ export default function Dashboard() {
               {marketOpen ? "🟢 Market Open" : "🔴 Market Closed"}
             </div>
           )}
-          <h1 className="text-4xl font-extrabold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-4">
-            📊 StockPulse Live
-          </h1>
+          <div className="w-full max-w-6xl grid grid-cols-3 items-center mb-6">
+            <div></div>
+            <h1 className="text-4xl font-extrabold text-center bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+              📊 StockPulse Live
+            </h1>
+            <div className="flex justify-end">
+              <Button
+                size="sm"
+                className="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2"
+                onClick={handlePortfolio}
+              >
+                Portfolio
+              </Button>
+            </div>
+          </div>
           <p className="text-gray-400 text-lg mb-10">
             Track real-time stock data and manage your portfolio
           </p>
