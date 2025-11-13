@@ -6,16 +6,19 @@ import { useEffect } from "react";
 interface authContextType {
   token: string | null;
   setToken: (token: string | null) => void;
+  loading: boolean;
 }
 
 const authContext = createContext<authContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [token, setToken] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     if (storedToken) setToken(storedToken);
+    setLoading(false);
   }, []);
   const handleSetToken = (newToken: string | null) => {
     if (newToken) {
@@ -27,7 +30,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <authContext.Provider value={{ token, setToken: handleSetToken }}>
+    <authContext.Provider value={{ token, setToken: handleSetToken, loading }}>
       {children}
     </authContext.Provider>
   );

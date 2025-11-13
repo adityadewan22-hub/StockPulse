@@ -1,19 +1,22 @@
 "use client";
 import { useEffect, useState, type ReactNode } from "react";
 import { useAuth } from "../context/authContext";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 function ProtectRoute({ children }: { children: ReactNode }) {
-  const { token } = useAuth();
+  const { token, loading } = useAuth();
   const router = useRouter();
-  const [loading, setLoading] = useState(true);
+  const pathname = usePathname();
 
   useEffect(() => {
-    setLoading(false);
+    if (loading) {
+      return;
+    }
     if (!token) {
+      localStorage.setItem("redirectLogin", pathname);
       router.push("/login");
     }
-  }, [token, router]);
+  }, [token, router, pathname, loading]);
   if (!token) {
     return null;
   }
