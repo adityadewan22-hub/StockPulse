@@ -29,42 +29,45 @@ const Login = () => {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen ">
-      <form
-        onSubmit={handleLogin}
-        className="flex flex-col gap-4 p-6 bg-white rounded shadow-md text-black"
-      >
-        <h2 className="text-2xl font-bold mb-2">Login</h2>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="border border-gray-400 p-2 rounded bg-gray-100"
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="border border-gray-400 p-2 rounded bg-gray-100"
-        />
-        <button
-          type="submit"
-          className="bg-blue-500 text-white p-2 rounded mt-2"
+    <div className="relative min-h-screen overflow-hidden bg-gray-950 text-white">
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-800/20 via-purple-700/20 to-black blur-3xl pointer-events-none"></div>
+      <div className="flex justify-center items-center h-screen ">
+        <form
+          onSubmit={handleLogin}
+          className="flex flex-col gap-4 p-6 bg-gray-400 rounded shadow-md text-black"
         >
-          Login
-        </button>
-        <p>
-          Don't have an account?
-          <span
-            onClick={() => router.push("/register")}
-            className="text-blue-500 cursor-pointer hover:underline"
+          <h2 className="text-2xl font-bold mb-2">Login</h2>
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="border border-gray-400 p-2 rounded bg-gray-100"
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="border border-gray-400 p-2 rounded bg-gray-100"
+          />
+          <button
+            type="submit"
+            className="bg-blue-500 hover:bg-blue-700 text-white p-2 rounded mt-2"
           >
-            Register
-          </span>
-        </p>
-      </form>
+            Login
+          </button>
+          <p>
+            Don't have an account?
+            <span
+              onClick={() => router.push("/register")}
+              className="text-green-200 cursor-pointer hover:underline"
+            >
+              Register
+            </span>
+          </p>
+        </form>
+      </div>
     </div>
   );
 };
