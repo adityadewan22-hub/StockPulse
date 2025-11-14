@@ -124,22 +124,22 @@ export default function Portfolio() {
   const cards = [
     {
       title: "Total Portfolio Value",
-      value: `${totalValue.toFixed(2)}`,
+      value: `${Number(totalValue.toFixed(2))}`,
       footer: "Your total value",
     },
     {
       title: "Total Invested",
-      value: `${invested.toFixed(2)}`,
+      value: `${Number(invested).toFixed(2)}`,
       footer: "Your money spent",
     },
     {
       title: "Total Profit",
-      value: `${profit.toFixed(2)}`,
+      value: `${Number(profit).toFixed(2)}`,
       footer: "Your gain",
     },
     {
       title: "Percentage Gain/Loss",
-      value: `${Percentage.toFixed(2)}`,
+      value: `${Number(Percentage).toFixed(2)}`,
       footer: "math",
     },
   ];

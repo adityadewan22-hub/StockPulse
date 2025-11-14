@@ -55,7 +55,7 @@ export function HoldingsTable({ holdings, totalValue }: Props) {
                     profit >= 0 ? "text-green-500" : "text-red-500"
                   }`}
                 >
-                  ${profit.toFixed(2)}
+                  ${Number(profit).toFixed(2)}
                 </TableCell>
                 <TableCell>{stock.btn}</TableCell>
               </TableRow>
