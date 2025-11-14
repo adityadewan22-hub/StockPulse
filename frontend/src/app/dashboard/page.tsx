@@ -205,7 +205,7 @@ export default function Dashboard() {
                         <Button
                           size="sm"
                           onClick={() =>
-                            handleBuy(s.symbol, quantities[s.symbol], s.c)
+                            handleBuy(s.symbol, quantities[s.symbol], s.price)
                           }
                           className="bg-green-600 hover:bg-green-700 text-white"
                         >
