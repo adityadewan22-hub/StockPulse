@@ -12,7 +12,6 @@ import { ReactElement } from "react";
 import axios from "axios";
 import { useAuth } from "@/app/context/authContext";
 import { Button } from "./button";
-import { symbol } from "framer-motion/client";
 
 type Holding = {
   symbol: string;
