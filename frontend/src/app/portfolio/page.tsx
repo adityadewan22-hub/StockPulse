@@ -124,22 +124,22 @@ export default function Portfolio() {
   const cards = [
     {
       title: "Total Portfolio Value",
-      value: `${totalValue.toFixed(3)}`,
+      value: `${totalValue.toFixed(2)}`,
       footer: "Your total value",
     },
     {
       title: "Total Invested",
-      value: `${invested.toFixed(3)}`,
+      value: `${invested.toFixed(2)}`,
       footer: "Your money spent",
     },
     {
       title: "Total Profit",
-      value: `${profit.toFixed(3)}`,
+      value: `${profit.toFixed(2)}`,
       footer: "Your gain",
     },
     {
       title: "Percentage Gain/Loss",
-      value: `${Percentage.toFixed(3)}`,
+      value: `${Percentage.toFixed(2)}`,
       footer: "math",
     },
   ];
@@ -164,9 +164,17 @@ export default function Portfolio() {
           </div>
           <Button
             onClick={() => router.push("/")}
-            className="mt-6 md:mt-0 bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-5"
+            className="mt-6 md:mt-0 bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-10 flex justify-end"
           >
             Home
+          </Button>
+          <Button
+            onClick={() => {
+              router.push("/dashboard");
+            }}
+            className="bg-green-600 hover:bg-green-700 text-white rounded-lg px-5"
+          >
+            Dashboard
           </Button>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">

@@ -20,7 +20,7 @@ const Login = () => {
       });
       const { token } = res.data;
       localStorage.setItem("token", token);
-      const path = localStorage.getItem("redirectLogin") || "/";
+      const path = localStorage.getItem("redirectLogin") || "/dashboard";
       localStorage.removeItem("redirectLogin");
       router.push(path);
     } catch (err: any) {
