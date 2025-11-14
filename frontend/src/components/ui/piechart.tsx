@@ -1,3 +1,5 @@
+"use client";
+import { useState, useEffect } from "react";
 import { Pie, PieChart, Cell, Tooltip, Legend } from "recharts";
 
 type Share = {
@@ -10,6 +12,13 @@ type Prop = {
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
 export const Chart1 = ({ shares }: Prop) => {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
   return (
     <PieChart width={400} height={300}>
       <Pie
