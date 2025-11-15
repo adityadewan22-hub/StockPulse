@@ -2,10 +2,12 @@
 import axios from "axios";
 import React, { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "../context/authContext";
 
 const Login = () => {
   //we need state, handle and reutrn;
   const router = useRouter();
+  const { setToken } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -19,7 +21,7 @@ const Login = () => {
         password,
       });
       const { token } = res.data;
-      localStorage.setItem("token", token);
+      setToken(token);
       const path = localStorage.getItem("redirectLogin") || "/dashboard";
       localStorage.removeItem("redirectLogin");
       router.push(path);
