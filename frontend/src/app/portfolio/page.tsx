@@ -144,10 +144,14 @@ export default function Portfolio() {
     },
   ];
 
-  const sampleHoldings = portfolio.map((s) => ({
-    symbol: s.symbol,
-    investmentPerStock: s.livePrice * s.quantity,
-  }));
+  const sampleHoldings = portfolio.map((s) => {
+    const price = s.livePrice ?? s.buyPrice;
+
+    return {
+      symbol: s.symbol,
+      investmentPerStock: price * s.quantity,
+    };
+  });
   const value = 700;
   return (
     <div className="relative min-h-screen bg-gray-950 text-white overflow-hidden">
