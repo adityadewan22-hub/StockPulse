@@ -65,7 +65,7 @@ socket.on("subscribeToStock", (symbols) => {
     subscriptions[symbol] = (subscriptions[symbol] || 0) + 1;
     socket.subscribedSymbols.add(symbol);
 
-    if (ws && ws.readyState === WebSocket.OPEN) {
+    if (ws) {
       ws.send(JSON.stringify({ type: "subscribe", symbol }));
     }
   }

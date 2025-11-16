@@ -4,7 +4,7 @@ import { prices,subscriptions } from "../priceStore.js";
 export const buyStock=async(req,res)=>{
     try{
         const {symbol,quantity,buyPrice}=req.body;
-        const userId=req.user.id;
+        const userId=req.user._id;
 
         let existingStock= await Portfolio.findOne({userId,symbol})
         if(existingStock){
@@ -43,7 +43,7 @@ export const buyStock=async(req,res)=>{
 export const sellStock=async(req,res)=>{
     try{
         const {symbol,quantity,sellPrice}=req.body;
-        const userId=req.user.id;
+        const userId=req.user._id;
         const stock=await Portfolio.findOne({userId,symbol});
         if(!stock){
             return res.status(404).json({message:"stock not found in portfolio"})
@@ -73,9 +73,10 @@ export const sellStock=async(req,res)=>{
 
 export const getPortfolio=async(req,res)=>{
     try{
-        const userId=req.user.id;
+        const userId=req.user._id;
         const portfolio=await Portfolio.find({userId});
         res.status(200).json(portfolio);
+        console.log("Authenticated user:", req.user._id);
     }catch(err){
         console.log(err.message);
     }

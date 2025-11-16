@@ -1,6 +1,11 @@
 import mongoose from "mongoose";
+import { type } from "os";
 
 const PortfolioSchema=new mongoose.Schema({
+    userId:{
+        type:mongoose.Schema.Types.ObjectId,
+        required:true,
+    },
     symbol:{
         type:String,
         required:true,
