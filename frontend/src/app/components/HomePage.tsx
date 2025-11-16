@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import AnimatedGraph from "../animations/graph";
 import { TrendingUp, BarChart3, Wallet, Brain } from "lucide-react";
+import { Github } from "lucide-react";
 
 const HomePage = () => {
   const [login, setLogin] = useState(false);
@@ -96,6 +97,14 @@ const HomePage = () => {
           <AnimatedGraph />
         </motion.div>
       </div>
+      <div className="flex justify-center mt-10">
+        <Button
+          onClick={handleDashboard}
+          className="bg-green-600 hover:bg-green-400 text-white px-8 py-3 text-lg rounded-xl font-semibold shadow-md shadow-green-700/30 transition-all duration-300"
+        >
+          Go to Dashboard
+        </Button>
+      </div>
 
       <div className="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         {features.map((f, i) => (
@@ -115,12 +124,13 @@ const HomePage = () => {
           </motion.div>
         ))}
       </div>
-      <div className="flex justify-center mt-10">
+      <div className="flex justify-center">
         <Button
-          onClick={handleDashboard}
-          className="bg-green-600 hover:bg-green-500 text-white px-8 py-3 text-lg rounded-xl font-semibold shadow-md shadow-green-700/30 transition-all duration-300"
+          onClick={() => window.open("https://github.com/adityadewan22-hub/")}
+          className="bg-gray-600 hover:bg-gray-400 text-white px-20 py-3 text-lg rounded-xl font-semibold shadow-md shadow-green-700/30 transition-all duration-300"
         >
-          Go to Dashboard
+          <Github className="w-20 h-20" />
+          My Github
         </Button>
       </div>
     </div>
