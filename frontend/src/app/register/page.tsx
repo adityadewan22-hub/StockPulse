@@ -23,7 +23,7 @@ const Register = () => {
       localStorage.setItem("token", token);
       router.push("/login");
     } catch (err: any) {
-      console.log("registeration failed", err.message);
+      console.log("registeration failed", err.response?.data);
     }
   };
 
@@ -51,7 +51,7 @@ const Register = () => {
             className="border border-gray-400 p-2 rounded bg-gray-100"
           ></input>
           <input
-            type="username"
+            type="text"
             placeholder="username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
