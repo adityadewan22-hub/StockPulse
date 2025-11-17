@@ -43,12 +43,14 @@ export default function StockLiveCard({ symbol }: StockLiveCardProp) {
         });
       }
     };
+    if (!socket) {
+      return;
+    }
     socket.emit("subscribeToStock", symbol);
     socket.on("stockUpdate", handleStockUpdate);
 
     return () => {
       socket.off("stockUpdate", handleStockUpdate);
-      socket.emit("unsubscribeFromStock", symbol);
     };
   }, [symbol, socket]);
 

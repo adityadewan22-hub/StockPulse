@@ -42,7 +42,7 @@ export default function StockList() {
     if (token) {
       fetchPortfolio();
     }
-  }, [socket]);
+  }, []);
 
   const fodder = ["AAPL", "MSFT", "GOOGL", "AMZN"];
 

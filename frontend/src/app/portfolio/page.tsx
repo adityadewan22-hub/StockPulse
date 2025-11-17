@@ -53,6 +53,7 @@ export default function Portfolio() {
     if (portfolio.length === 0) {
       return;
     }
+    if (!socket) return;
     portfolio.forEach((stock) => {
       socket.emit("subscribeToStock", stock.symbol);
     });

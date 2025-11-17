@@ -58,11 +58,7 @@ export default function Dashboard() {
     });
 
     return () => {
-      socket.off("stockUpdate");
-      socket.emit(
-        "unsubscribeFromStock",
-        stocklist.map((s) => s.symbol)
-      );
+      socket?.off("stockUpdate");
     };
   }, [socket]);
 
