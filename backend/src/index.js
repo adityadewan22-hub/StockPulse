@@ -56,6 +56,24 @@ app.get("/api/market-status", async (req, res) => {
 io.on("connection",(socket)=>{
     console.log("client connected:",socket.id);
 
+     const token = socket.handshake.auth?.token;
+
+  if (!token) {
+    console.log("No token provided");
+    socket.disconnect(true);
+    return;
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_KEY);
+    console.log(" Socket authorized:", decoded.email);
+    socket.user = decoded;
+  } catch (err) {
+    console.log(" Invalid token");
+    socket.disconnect(true);
+    return;
+  }
+
     socket.subscribedSymbols=new Set();
 
 socket.on("subscribeToStock", (symbols) => {
@@ -93,7 +111,7 @@ app.use("/api/stocks", router);
 const PORT = process.env.PORT || 5000;
 
 server.listen(PORT,'0.0.0.0',()=>{
-  console.log("server running on port 5000");
+  console.log(`server running on port ${PORT}`);;
   setupFinnhubConnection();
 }
 );
