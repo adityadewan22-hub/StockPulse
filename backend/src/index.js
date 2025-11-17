@@ -13,6 +13,7 @@ import stockAuth from "./middleware/socketAuth.js";
 import { subscriptions } from "./priceStore.js";
 import portfolioRouter from "./routes/portfolioRoutes.js";
 import isOpen from "../utils/checkMarket.js";
+import jwt from "jsonwebtoken"
 
 dotenv.config();
 connectDB();
@@ -28,7 +29,13 @@ app.use("/api/portfolio",portfolioRouter)
 const server = http.createServer(app);
 
 const io=new Server(server,{
-    cors:{origin:"*"},
+    cors:{origin: [
+    "https://stockpulse-2.onrender.com",
+    "https://stock-pulse-two.vercel.app/",
+    "http://localhost:3000"
+  ],
+  methods: ["GET", "POST"],
+  credentials: true},
 });
 
 io.use(stockAuth);
