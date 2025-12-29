@@ -5,13 +5,10 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 let socket: Socket | null = null;
 
 export const getSocket = () => {
-  // Only run in the browser
   if (typeof window === "undefined") return null;
 
-  // If socket already exists, return it
   if (socket) return socket;
 
-  // Create and store the socket ONCE
   const token = localStorage.getItem("token") || "";
 
   socket = io(API_URL!, {
@@ -22,5 +19,3 @@ export const getSocket = () => {
 
   return socket;
 };
-
-// @ts-ignore

@@ -18,7 +18,6 @@ export default function Dashboard() {
   const [marketOpen, setMarketOpen] = useState<boolean | null>(null);
   const { token } = useAuth();
   const [quantities, setQuantities] = useState<Record<string, number>>({});
-  const [data, setData] = useState<any>();
   const [stocks, setStocks] = useState<any[]>([]);
   const socket = getSocket();
   const router = useRouter();

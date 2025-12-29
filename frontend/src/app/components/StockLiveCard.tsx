@@ -24,7 +24,6 @@ export default function StockLiveCard({ symbol }: StockLiveCardProp) {
   const [marketOpen, setMarketOpen] = useState<boolean | null>(null);
   const { token } = useAuth();
   const socket = getSocket();
-  const MotionCard = motion(DashboardCard);
 
   useEffect(() => {
     const handleStockUpdate = (data: any) => {
